@@ -4,8 +4,6 @@
 #include "../../src/modules/raw_packet_parser.h"
 #include "../../src/etc/format_helpers.h"
 
-#include "../include/raw_packet_data.h"
-
 using namespace starflow;
 
 TEST_CASE("RawPacketParser", "[modules::RawPacketParser]")

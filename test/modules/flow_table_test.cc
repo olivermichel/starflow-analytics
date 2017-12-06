@@ -1,7 +1,6 @@
 
 #include <catch.h>
 #include "../../src/modules/flow_table.h"
-#include "../include/raw_packet_data.h"
 #include "../../src/types/raw_packet.h"
 #include "../../src/modules/raw_packet_parser.h"
 #include "../../src/modules/pcap_reader.h"
