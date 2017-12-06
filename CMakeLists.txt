@@ -40,6 +40,7 @@ set(KERNELS_SRC
 
 set(ETC_DIR src/etc)
 set(ETC_SRC
+        ${ETC_DIR}/timer.h ${ETC_DIR}/timer.cc
         ${ETC_DIR}/tcp_flow_state.h ${ETC_DIR}/tcp_flow_state.cc
         ${ETC_DIR}/format_helpers.h ${ETC_DIR}/format_helpers.cc)
 
