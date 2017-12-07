@@ -133,7 +133,7 @@ starflow::modules::FlowTable::flow_table_t::iterator
 	if (_mode == mode::callback)
 		_callback(i->second);
 	else if (_mode == mode::store)
-		_exported_flows.emplace_back(*i);
+		_exported_flows.emplace_back(i->second);
 
 	_n_packets -= i->second.n_packets();
 	_n_flows_processed += 1;

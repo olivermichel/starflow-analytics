@@ -14,7 +14,7 @@ namespace starflow {
 		class FlowTable
 		{
 			using flow_table_t           = std::map<types::Key, types::CLFR>;
-			using exported_flows_table_t = std::list<std::pair<types::Key, types::CLFR>>;
+			using exported_flows_table_t = std::list<types::CLFR>;
 			using export_flow_callback_t = std::function<void (types::CLFR)>;
 			enum class _ip_proto : uint8_t { icmp = 1, tcp = 6, udp = 17 };
 

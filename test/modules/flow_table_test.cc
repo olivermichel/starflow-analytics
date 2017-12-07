@@ -240,8 +240,8 @@ TEST_CASE("FlowTable", "[modules::FlowTable]")
 		CHECK(flow_table.count_flows_processed() == 1);
 
 		CHECK(flow_table.exported_flows().size() == 1);
-		CHECK(flow_table.exported_flows().front().first == pair_a1.first);
-		CHECK(flow_table.exported_flows().front().second.n_packets() == 4);
+		CHECK(flow_table.exported_flows().front().key() == pair_a1.first);
+		CHECK(flow_table.exported_flows().front().n_packets() == 4);
 	}
 
 	SECTION("add_packet(): handles multiple flows simultaneously")
