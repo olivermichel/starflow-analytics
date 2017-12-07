@@ -4,37 +4,16 @@
 void starflow::modules::FlowTable::add_packet(types::Key key, types::Packet packet)
 	throw(std::logic_error)
 {
-	//TODO: refactor
-
 	if (_mode == mode::callback && !_callback)
 		throw std::logic_error("FlowTable: no callback function set");
 
-	auto i = _active_flows.find(key);
+	auto ts = packet.ts;
 
-	if (i == std::end(_active_flows)) {
-		i = _active_flows.emplace(key, types::CLFR(key)).first;
-		_n_flows++;
-	}
+	auto flow_table_iter = _lookup_and_insert(std::move(key), std::move(packet));
+	_check_evict(flow_table_iter, ts);
 
-	if (i != std::end(_active_flows)) {
-		i->second.add_packet(packet);
-		_n_packets++;
-	}
-
-	if (key.ip_proto == IPPROTO_TCP && packet.features.tcp_flags.is_fin()) {
-		_evict_flow(i, packet.ts, true);
-	} /* else if (_incomplete_evict_policy == incomplete_evict_policy::pkt_count
-			   && i->second.n_packets() >= _incomplete_evict_pkt_count) {
-		_evict_flow(i, packet.ts, false);
-	} */
-
-	// set last t/o check to current packet ts on very first packet
-	// (avoid t/o check on empty table)
-	if (_n_packets_processed++ == 0)
-		_last_to_check = packet.ts;
-
-	if ((packet.ts.count() - _last_to_check.count()) > _to_check_interval.count())
-		_check_timeouts(packet.ts);
+	if ((ts.count() - _last_to_check.count()) > _to_check_interval.count())
+		_check_timeouts(ts);
 }
 
 void starflow::modules::FlowTable::add_packet(std::pair<types::Key, types::Packet> pair)
@@ -82,15 +61,45 @@ const starflow::modules::FlowTable::exported_flows_table_t&
 void starflow::modules::FlowTable::force_export_udp(bool complete)
 {
 	for (auto i = std::begin(_active_flows); i != std::end(_active_flows);)
-		i = i->first.ip_proto == IPPROTO_UDP ?
+		i = i->first.ip_proto == (uint8_t) _ip_proto::udp ?
 			_evict_flow(i, i->second.last_packet().ts, complete) : std::next(i, 1);
 }
 
 void starflow::modules::FlowTable::force_export_tcp(bool complete)
 {
 	for (auto i = std::begin(_active_flows); i != std::end(_active_flows);)
-		i = i->first.ip_proto == IPPROTO_TCP ?
+		i = i->first.ip_proto == (uint8_t) _ip_proto::tcp ?
 			_evict_flow(i, i->second.last_packet().ts, complete) : std::next(i, 1);
+}
+
+starflow::modules::FlowTable::flow_table_t::iterator
+	starflow::modules::FlowTable::_lookup_and_insert(types::Key&& key, types::Packet&& packet)
+{
+	auto i = _active_flows.find(key);
+
+	if (i == std::end(_active_flows)) {
+		i = _active_flows.emplace(key, types::CLFR(key)).first;
+		_n_flows++;
+	}
+
+	if (i != std::end(_active_flows)) {
+		i->second.add_packet(std::move(packet));
+		_n_packets++;
+	}
+
+	return i;
+}
+
+void starflow::modules::FlowTable::
+	_check_evict(flow_table_t::iterator it, std::chrono::microseconds ts)
+{
+	if (it->first.ip_proto == (uint8_t) _ip_proto::tcp
+		&& it->second.last_packet().features.tcp_flags.is_fin()) {
+		_evict_flow(it, ts, true);
+	} /* else if (_incomplete_evict_policy == incomplete_evict_policy::pkt_count
+			   && i->second.n_packets() >= _incomplete_evict_pkt_count) {
+		_evict_flow(i, packet.ts, false);
+	} */
 }
 
 void starflow::modules::FlowTable::_check_timeouts(std::chrono::microseconds trigger_ts)
@@ -101,7 +110,7 @@ void starflow::modules::FlowTable::_check_timeouts(std::chrono::microseconds tri
 		long long int since_last_packet
 			= (trigger_ts.count() - i->second.last_packet().ts.count());
 
-		if (i->first.ip_proto == IPPROTO_UDP && since_last_packet >= _udp_to.count()) {
+		if (i->first.ip_proto == (uint8_t) _ip_proto::udp && since_last_packet >= _udp_to.count()) {
 			i = _evict_flow(i, trigger_ts, true);
 		} /* else if (_incomplete_evict_policy == incomplete_evict_policy::to
 				   && since_last_packet >= _incomplete_evict_to.count()) {

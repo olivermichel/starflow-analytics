@@ -16,6 +16,7 @@ namespace starflow {
 			using flow_table_t           = std::map<types::Key, types::CLFR>;
 			using exported_flows_table_t = std::list<std::pair<types::Key, types::CLFR>>;
 			using export_flow_callback_t = std::function<void (types::CLFR)>;
+			enum class _ip_proto : uint8_t { icmp = 1, tcp = 6, udp = 17 };
 
 		public:
 
@@ -62,6 +63,10 @@ namespace starflow {
 			unsigned long long _n_flows                      = 0;
 
 			export_flow_callback_t _callback = nullptr;
+
+			flow_table_t::iterator _lookup_and_insert(types::Key&& key, types::Packet&& packet);
+
+			void _check_evict(flow_table_t::iterator, std::chrono::microseconds ts);
 
 			void _check_timeouts(std::chrono::microseconds trigger_ts);
 
