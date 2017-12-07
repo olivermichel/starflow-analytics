@@ -60,8 +60,8 @@ add_custom_command(
              --plugin=protoc-gen-grpc=${GRPC_PREFIX}/bin/grpc_cpp_plugin starflow.proto
         WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
 
-include(cmake/exe/packet_capture.cmake)
 include(cmake/exe/test_runner.cmake)
+include(cmake/exe/packet_capture.cmake)
 
 #include(cmake/exe/clfr_converter.cmake)
 #include(cmake/exe/clfr_driver.cmake)

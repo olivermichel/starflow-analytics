@@ -17,3 +17,39 @@ add_executable(test_runner
 
 target_include_directories(test_runner PUBLIC test/include)
 target_link_libraries(test_runner pcap)
+
+enable_testing()
+add_test(
+        NAME CLFR
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        COMMAND test_runner CLFR)
+
+add_test(
+        NAME RawPacket
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        COMMAND test_runner RawPacket)
+
+add_test(
+        NAME FlowTable
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        COMMAND test_runner FlowTable)
+
+add_test(
+        NAME PCAPReader
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        COMMAND test_runner PCAPReader)
+
+add_test(
+        NAME TCPFlowState
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        COMMAND test_runner TCPFlowState)
+
+add_test(
+        NAME Timer
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        COMMAND test_runner Timer)
+
+add_test(
+        NAME RawPacketParser
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        COMMAND test_runner RawPacketParser)
