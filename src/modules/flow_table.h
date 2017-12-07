@@ -51,11 +51,11 @@ namespace starflow {
 			std::chrono::microseconds _last_to_check         = std::chrono::seconds(0);
 
 			FlowTable::mode _mode                            = mode::callback;
-
+/*
 			incomplete_evict_policy _incomplete_evict_policy = incomplete_evict_policy::none;
 			std::chrono::microseconds _incomplete_evict_to   = std::chrono::seconds(10);
 			unsigned long _incomplete_evict_pkt_count        = 50;
-
+*/
 			unsigned long long _n_packets_processed          = 0;
 			unsigned long long _n_flows_processed            = 0;
 			unsigned long long _n_packets                    = 0;
