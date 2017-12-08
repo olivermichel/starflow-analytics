@@ -24,6 +24,25 @@ starflow::types::Key::Key(std::uint8_t ip_p, std::uint32_t ip_src, std::uint32_t
 	  th_dport(th_dport)
 { }
 
+starflow::types::Key::Key(const starflow::proto::key& k)
+	: ip_proto(static_cast<std::uint8_t>(k.ip_proto())),
+	  ip_src(static_cast<std::uint32_t>(k.ip_src())),
+	  ip_dst(static_cast<std::uint32_t>(k.ip_dst())),
+	  th_sport(static_cast<std::uint16_t>(k.th_sport())),
+	  th_dport(static_cast<std::uint16_t>(k.th_dport()))
+{ }
+
+starflow::proto::key starflow::types::Key::to_proto() const
+{
+	proto::key k;
+	k.set_ip_proto(ip_proto);
+	k.set_ip_src(ip_src);
+	k.set_ip_dst(ip_dst);
+	k.set_th_sport(th_sport);
+	k.set_th_dport(th_dport);
+	return k;
+}
+
 std::string starflow::types::Key::str_desc() const
 {
 	std::string desc = "starflow::types::Key(ip_proto=" + std::to_string(ip_proto) + ", ip_src="
