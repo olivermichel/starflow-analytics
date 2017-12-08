@@ -57,6 +57,8 @@ namespace starflow {
 			std::chrono::microseconds _incomplete_evict_to   = std::chrono::seconds(10);
 			unsigned long _incomplete_evict_pkt_count        = 50;
 */
+			unsigned long long _next_id                      = 1;
+
 			unsigned long long _n_packets_processed          = 0;
 			unsigned long long _n_flows_processed            = 0;
 			unsigned long long _n_packets                    = 0;

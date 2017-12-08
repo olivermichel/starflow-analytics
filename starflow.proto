@@ -30,8 +30,9 @@ message key {
 
 message clfr {
     key key        = 1;
-    int64 evict_ts = 2;
-    bool complete  = 3;
+    bool complete  = 2;
+    int64 id       = 3;
+    int64 evict_ts = 4;
 }
 
 //message flow {

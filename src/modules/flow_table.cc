@@ -78,7 +78,7 @@ starflow::modules::FlowTable::flow_table_t::iterator
 	auto i = _active_flows.find(key);
 
 	if (i == std::end(_active_flows)) {
-		i = _active_flows.emplace(key, types::CLFR(key)).first;
+		i = _active_flows.emplace(key, types::CLFR(key, _next_id++)).first;
 		_n_flows++;
 	}
 

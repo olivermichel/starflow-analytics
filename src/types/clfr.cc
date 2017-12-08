@@ -4,14 +4,15 @@
 #include <numeric>
 
 starflow::types::CLFR::CLFR()
-	: _key() { }
+	: _key(), _id(0) { }
 
-starflow::types::CLFR::CLFR(const Key& k)
-	: _key(k) { }
+starflow::types::CLFR::CLFR(const Key& k, unsigned long long id)
+	: _key(k), _id(id) { }
 
 //TODO: deserialize packet list
 starflow::types::CLFR::CLFR(const proto::clfr& proto_clfr)
 	: _key(proto_clfr.key()),
+	  _id(proto_clfr.id()),
 	  _evict_ts(std::chrono::microseconds(proto_clfr.evict_ts())),
 	  _complete(proto_clfr.complete()) { }
 
@@ -20,6 +21,7 @@ starflow::proto::clfr starflow::types::CLFR::to_proto() const
 {
 	proto::clfr proto_clfr;
 	proto_clfr.set_allocated_key(new proto::key(_key.to_proto()));
+	proto_clfr.set_id(_id);
 	proto_clfr.set_complete(_complete);
 	proto_clfr.set_evict_ts(_evict_ts.count());
 	return proto_clfr;
@@ -28,6 +30,11 @@ starflow::proto::clfr starflow::types::CLFR::to_proto() const
 const starflow::types::Key& starflow::types::CLFR::key() const
 {
 	return _key;
+}
+
+unsigned long long starflow::types::CLFR::id() const
+{
+	return _id;
 }
 
 void starflow::types::CLFR::add_packet(Packet p)
