@@ -9,6 +9,22 @@ starflow::types::CLFR::CLFR()
 starflow::types::CLFR::CLFR(const Key& k)
 	: _key(k) { }
 
+//TODO: deserialize packet list
+starflow::types::CLFR::CLFR(const proto::clfr& proto_clfr)
+	: _key(proto_clfr.key()),
+	  _evict_ts(std::chrono::microseconds(proto_clfr.evict_ts())),
+	  _complete(proto_clfr.complete()) { }
+
+//TODO: serialize packet list
+starflow::proto::clfr starflow::types::CLFR::to_proto() const
+{
+	proto::clfr proto_clfr;
+	proto_clfr.set_allocated_key(new proto::key(_key.to_proto()));
+	proto_clfr.set_complete(_complete);
+	proto_clfr.set_evict_ts(_evict_ts.count());
+	return proto_clfr;
+}
+
 const starflow::types::Key& starflow::types::CLFR::key() const
 {
 	return _key;
@@ -42,6 +58,11 @@ std::string starflow::types::CLFR::str_desc() const
 bool starflow::types::CLFR::complete() const
 {
 	return _complete;
+}
+
+std::chrono::microseconds starflow::types::CLFR::evict_ts() const
+{
+	return _evict_ts;
 }
 
 unsigned long starflow::types::CLFR::n_packets() const

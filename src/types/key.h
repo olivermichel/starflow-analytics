@@ -19,7 +19,7 @@ namespace starflow {
 			Key(Key&&)                 = default;
 			Key& operator=(Key&&)      = default;
 
-			Key(const proto::key&);
+			explicit Key(const proto::key&);
 
 			proto::key to_proto() const;
 

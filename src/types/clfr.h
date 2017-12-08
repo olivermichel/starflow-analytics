@@ -29,6 +29,10 @@ namespace starflow {
 			CLFR(CLFR&&)                 = default;
 			CLFR& operator=(CLFR&&)      = default;
 
+			explicit CLFR(const proto::clfr&);
+
+			proto::clfr to_proto() const;
+
 			const Key& key() const;
 
 			void add_packet(Packet p);
@@ -39,6 +43,8 @@ namespace starflow {
 			std::string str_desc() const;
 
 			bool complete() const;
+
+			std::chrono::microseconds evict_ts() const;
 
 			unsigned long n_packets() const;
 			unsigned long n_bytes() const;

@@ -24,4 +24,15 @@ TEST_CASE("CLFR", "[types::CLFR]")
 		types::CLFR clfr(k1);
 		CHECK(clfr.key() == k1);
 	}
+
+	SECTION("CLFR(proto), to_proto()")
+	{
+		types::CLFR clfr1(k1);
+		proto::clfr proto_clfr = clfr1.to_proto();
+		types::CLFR clfr2(proto_clfr);
+
+		CHECK(clfr1.key() == clfr2.key());
+		CHECK(clfr1.complete() == clfr2.complete());
+		CHECK(clfr1.evict_ts() == clfr2.evict_ts());
+	}
 }
