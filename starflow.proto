@@ -33,6 +33,7 @@ message clfr {
     bool complete  = 2;
     int64 id       = 3;
     int64 evict_ts = 4;
+    int32 table_id = 5;
 }
 
 //message flow {

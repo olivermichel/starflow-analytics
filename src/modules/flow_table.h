@@ -23,6 +23,17 @@ namespace starflow {
 			enum class incomplete_evict_policy { none, to, pkt_count };
 			enum class mode { callback, store };
 
+			FlowTable() = default;
+			explicit FlowTable(unsigned id);
+
+			FlowTable(const FlowTable&)            = delete;
+			FlowTable& operator=(const FlowTable&) = delete;
+
+			FlowTable(FlowTable&&)                 = default;
+			FlowTable& operator=(FlowTable&&)      = default;
+
+			unsigned id() const;
+
 			void add_packet(types::Key key, types::Packet packet)
 				throw(std::logic_error);
 
@@ -44,6 +55,8 @@ namespace starflow {
 			void force_export_udp(bool complete = false);
 
 		private:
+
+			unsigned _id                                     = 0;
 			flow_table_t _active_flows                       = {};
 			exported_flows_table_t _exported_flows           = {};
 

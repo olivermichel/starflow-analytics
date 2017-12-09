@@ -23,7 +23,7 @@ namespace starflow {
 
 		public:
 			CLFR();
-			CLFR(const Key& k, unsigned long long id);
+			CLFR(const Key& k, unsigned long long flow_id, unsigned table_id);
 			CLFR(const CLFR&)            = default;
 			CLFR& operator=(const CLFR&) = default;
 			CLFR(CLFR&&)                 = default;
@@ -36,6 +36,7 @@ namespace starflow {
 			const Key& key() const;
 
 			unsigned long long id() const;
+			unsigned table_id() const;
 
 			void add_packet(Packet p);
 			const Packet& last_packet() const;
@@ -57,6 +58,7 @@ namespace starflow {
 			Key _key;
 			bool _complete = false;
 			unsigned long long _id;
+			unsigned _table_id;
 			std::chrono::microseconds _evict_ts = std::chrono::microseconds(0);
 			std::list<types::Packet> _packets = {};
 		};

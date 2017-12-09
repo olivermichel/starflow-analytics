@@ -189,6 +189,26 @@ TEST_CASE("FlowTable", "[modules::FlowTable]")
 	auto pair_b3 = parser(pkt_b3);
 	auto pair_b4 = parser(pkt_b4);
 
+	SECTION("FlowTable(): table id defaults to 0 and tables are empty")
+	{
+		modules::FlowTable flow_table;
+		CHECK(flow_table.id() == 0);
+		CHECK(flow_table.count_flows() == 0);
+		CHECK(flow_table.count_flows_processed() == 0);
+		CHECK(flow_table.count_packets() == 0);
+		CHECK(flow_table.count_packets_processed() == 0);
+	}
+
+	SECTION("FlowTable(id): can be constructed with an id")
+	{
+		modules::FlowTable flow_table(232);
+		CHECK(flow_table.id() == 232);
+		CHECK(flow_table.count_flows() == 0);
+		CHECK(flow_table.count_flows_processed() == 0);
+		CHECK(flow_table.count_packets() == 0);
+		CHECK(flow_table.count_packets_processed() == 0);
+	}
+
 	SECTION("add_packet(): packet and flow counters are incremented")
 	{
 		modules::FlowTable flow_table;

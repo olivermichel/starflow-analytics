@@ -1,6 +1,14 @@
 
 #include "flow_table.h"
 
+starflow::modules::FlowTable::FlowTable(unsigned id)
+	: _id(id) { }
+
+unsigned starflow::modules::FlowTable::id() const
+{
+	return _id;
+}
+
 void starflow::modules::FlowTable::add_packet(types::Key key, types::Packet packet)
 	throw(std::logic_error)
 {
@@ -78,7 +86,7 @@ starflow::modules::FlowTable::flow_table_t::iterator
 	auto i = _active_flows.find(key);
 
 	if (i == std::end(_active_flows)) {
-		i = _active_flows.emplace(key, types::CLFR(key, _next_id++)).first;
+		i = _active_flows.emplace(key, types::CLFR(key, _next_id++, _id)).first;
 		_n_flows++;
 	}
 

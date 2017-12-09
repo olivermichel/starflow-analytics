@@ -20,21 +20,23 @@ TEST_CASE("CLFR", "[types::CLFR]")
 		CHECK(clfr.id()           == 0);
 	}
 
-	SECTION("CLFR(): can be constructed with a key and id")
+	SECTION("CLFR(): can be constructed with a key, id and table id")
 	{
-		types::CLFR clfr(k1, 1);
+		types::CLFR clfr(k1, 1, 5);
 		CHECK(clfr.key() == k1);
 		CHECK(clfr.id()  == 1);
+		CHECK(clfr.table_id() == 5);
 	}
 
 	SECTION("CLFR(proto), to_proto()")
 	{
-		types::CLFR clfr1(k1, 1);
+		types::CLFR clfr1(k1, 1, 5);
 		proto::clfr proto_clfr = clfr1.to_proto();
 		types::CLFR clfr2(proto_clfr);
 
-		CHECK(clfr1.key() == clfr2.key());
-		CHECK(clfr1.id()  == clfr2.id());
+		CHECK(clfr1.key()      == clfr2.key());
+		CHECK(clfr1.id()       == clfr2.id());
+		CHECK(clfr1.table_id() == clfr2.table_id());
 		CHECK(clfr1.complete() == clfr2.complete());
 		CHECK(clfr1.evict_ts() == clfr2.evict_ts());
 	}
