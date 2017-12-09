@@ -15,6 +15,8 @@ include(cmake/dep/raft.cmake)
 
 set(MODULES_DIR ${CMAKE_CURRENT_LIST_DIR}/src/modules)
 set(MODULES_SRC
+        ${MODULES_DIR}/ui_server.h ${MODULES_DIR}/ui_server.cc
+        ${MODULES_DIR}/ui_adapter.h ${MODULES_DIR}/ui_adapter.cc
         ${MODULES_DIR}/flow_table.h ${MODULES_DIR}/flow_table.cc
         ${MODULES_DIR}/live_capture.h ${MODULES_DIR}/live_capture.cc
         ${MODULES_DIR}/pcap_reader.h ${MODULES_DIR}/pcap_reader.cc

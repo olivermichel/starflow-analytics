@@ -10,3 +10,4 @@ add_executable(packet_capture
 target_link_libraries(packet_capture protobuf)
 target_link_libraries(packet_capture pcap)
 target_link_libraries(packet_capture raft)
+target_link_libraries(packet_capture grpc++)

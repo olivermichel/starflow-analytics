@@ -3,6 +3,14 @@ syntax = "proto3";
 
 package starflow.proto;
 
+service UIServer {
+    rpc SayHello (HelloRequest) returns (HelloReply) { }
+}
+
+message HelloRequest { }
+
+message HelloReply { }
+
 //message raw_packet {
 //    int64 ts  = 1;
 //    int32 len = 2;
