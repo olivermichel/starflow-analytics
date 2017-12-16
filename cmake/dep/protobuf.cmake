@@ -1,4 +1,10 @@
 
-find_package(PkgConfig REQUIRED)
-pkg_search_module(PROTOBUF REQUIRED protobuf)
-message("-- libprotobuf ${PROTOBUF_VERSION}: ${PROTOBUF_LIBRARY_DIRS}, include: ${PROTOBUF_INCLUDE_DIRS}")
+find_library(PROTOBUF_LIB protobuf)
+find_file(PROTOBUF_INC google/protobuf)
+find_program(PROTOBUF_PROTOC protoc)
+
+if(NOT PROTOBUF_LIB OR NOT PROTOBUF_INC OR NOT PROTOBUF_PROTOC)
+    message(WARNING "protobuf: not found")
+else()
+    message(STATUS "protobuf: PROTOBUF_LIB:${PROTOBUF_LIB}, PROTOBUF_INC:${PROTOBUF_INC}, PROTOBUF_PROTOC:${PROTOBUF_PROTOC}")
+endif(NOT PROTOBUF_LIB OR NOT PROTOBUF_INC OR NOT PROTOBUF_PROTOC)

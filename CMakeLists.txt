@@ -57,9 +57,9 @@ add_custom_command(
         MAIN_DEPENDENCY starflow.proto
         COMMAND protoc
         ARGS --cpp_out=src/proto starflow.proto
-        COMMAND protoc
+        COMMAND ${PROTOBUF_PROTOC}
         ARGS --grpc_out=src/proto
-             --plugin=protoc-gen-grpc=${GRPC_PREFIX}/bin/grpc_cpp_plugin starflow.proto
+             --plugin=protoc-gen-grpc=${GRPC_CPP_GEN} starflow.proto
         WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
 
 include(cmake/exe/test_runner.cmake)
