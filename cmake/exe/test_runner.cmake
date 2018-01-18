@@ -1,6 +1,7 @@
 
 set(TEST_SRC
         test/types/clfr_test.cc
+        test/types/features_test.cc
         test/types/raw_packet_test.cc
         test/types/key_test.cc
         test/modules/flow_table_test.cc
@@ -47,3 +48,6 @@ add_test(NAME RawPacketParser
 
 add_test(NAME Key
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND test_runner Key)
+
+add_test(NAME Features
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND test_runner Features)

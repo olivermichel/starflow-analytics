@@ -31,10 +31,13 @@ message key {
     int32 th_dport = 5;
 }
 
-//message features {
-//    int32 ip_ttl = 1;
-//    int32 q_len  = 2;
-//}
+message tcp_flags {
+    int32 flags = 1;
+}
+
+message features {
+    tcp_flags tcp_flags = 1;
+}
 
 message clfr {
     key key        = 1;

@@ -4,6 +4,8 @@
 
 #include <string>
 
+#include "../proto/starflow.pb.h"
+
 namespace starflow {
 	namespace types {
 		class Features
@@ -15,6 +17,7 @@ namespace starflow {
 			public:
 				tcp_flags_t();
 				explicit tcp_flags_t(unsigned char flags);
+				explicit tcp_flags_t(const proto::tcp_flags& f);
 				tcp_flags_t(const tcp_flags_t&)            = default;
 				tcp_flags_t& operator=(const tcp_flags_t&) = default;
 				tcp_flags_t(tcp_flags_t&&)                 = default;
@@ -25,7 +28,13 @@ namespace starflow {
 				inline bool is_rst() const { return (_flags & _rst) == _rst; }
 				inline bool is_syn() const { return (_flags & _syn) == _syn; }
 				inline bool is_fin() const { return (_flags & _fin) == _fin; }
+
+				bool operator==(const tcp_flags_t& other) const;
+				bool operator!=(const tcp_flags_t& other) const;
+
 				std::string str_desc() const;
+
+				proto::tcp_flags to_proto() const;
 
 			private:
 				unsigned char _flags;
@@ -38,8 +47,6 @@ namespace starflow {
 			};
 
 			//TODO: bool operator<(Features b) const;
-			//TODO:	proto::features to_proto() const;
-			//TODO:	static Features from_proto(const proto::features);
 
 			Features()                           = default;
 			Features(const Features&)            = default;
@@ -47,11 +54,18 @@ namespace starflow {
 			Features(Features&&)                 = default;
 			Features& operator=(Features&&)      = default;
 
+			explicit Features(const starflow::proto::features& f);
+
+			bool operator==(const Features& other) const;
+			bool operator!=(const Features& other) const;
+
 			//TODO: look at std::optional spec;
 			unsigned char ip_ttl = 0;
 			tcp_flags_t tcp_flags = tcp_flags_t(0);
 
-			virtual ~Features();
+			proto::features to_proto() const;
+
+			virtual ~Features() = default;
 		};
 	}
 }
