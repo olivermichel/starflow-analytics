@@ -17,11 +17,12 @@ message HelloReply { }
 //    string pl = 3;
 //}
 //
-//message packet {
-//    int64 ts          = 1;
-//    int32 len         = 2;
-//    features features = 3;
-//}
+
+message packet {
+    int64 ts          = 1;
+    int32 len         = 2;
+    features features = 3;
+}
 
 message key {
     int32 ip_proto = 1;

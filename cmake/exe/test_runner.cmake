@@ -4,6 +4,7 @@ set(TEST_SRC
         test/types/features_test.cc
         test/types/raw_packet_test.cc
         test/types/key_test.cc
+        test/types/packet_test.cc
         test/modules/flow_table_test.cc
         test/modules/pcap_reader_test.cc
         test/etc/tcp_flow_state_test.cc
@@ -51,3 +52,6 @@ add_test(NAME Key
 
 add_test(NAME Features
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND test_runner Features)
+
+add_test(NAME Packet
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND test_runner Packet)
