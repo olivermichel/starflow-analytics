@@ -7,17 +7,19 @@ starflow::types::CLFR::CLFR()
 	: _key(), _id(0), _table_id(0) { }
 
 starflow::types::CLFR::CLFR(const Key& k, unsigned long long flow_id, unsigned table_id)
-	: _key(k), _id(flow_id), _table_id(table_id){ }
+	: _key(k), _id(flow_id), _table_id(table_id) { }
 
-//TODO: deserialize packet list
 starflow::types::CLFR::CLFR(const proto::clfr& proto_clfr)
 	: _key(proto_clfr.key()),
 	  _id(static_cast<unsigned long long>(proto_clfr.id())),
 	  _table_id(static_cast<unsigned>(proto_clfr.table_id())),
 	  _evict_ts(std::chrono::microseconds(proto_clfr.evict_ts())),
-	  _complete(proto_clfr.complete()) { }
+	  _complete(proto_clfr.complete())
+{
+	for (int i = 0; i < proto_clfr.packets_size(); i++)
+		_packets.emplace_back(proto_clfr.packets(i));
+}
 
-//TODO: serialize packet list
 starflow::proto::clfr starflow::types::CLFR::to_proto() const
 {
 	proto::clfr proto_clfr;
@@ -26,6 +28,12 @@ starflow::proto::clfr starflow::types::CLFR::to_proto() const
 	proto_clfr.set_complete(_complete);
 	proto_clfr.set_evict_ts(_evict_ts.count());
 	proto_clfr.set_table_id(_table_id);
+
+	for (auto& p : _packets) {
+		proto::packet* new_packet = proto_clfr.add_packets();
+		*new_packet = p.to_proto();
+	}
+
 	return proto_clfr;
 }
 

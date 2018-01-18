@@ -41,23 +41,14 @@ message features {
 }
 
 message clfr {
-    key key        = 1;
-    bool complete  = 2;
-    int64 id       = 3;
-    int64 evict_ts = 4;
-    int32 table_id = 5;
+    key key                 = 1;
+    bool complete           = 2;
+    int64 id                = 3;
+    int64 evict_ts          = 4;
+    int32 table_id          = 5;
+    repeated packet packets = 6;
 }
 
-//message flow {
-//    int64 evict_ts          = 1;
-//    repeated packet packets = 2;
-//}
-
-//message export_flow {
-//    key key   = 1;
-//    flow flow = 2;
-//}
-//
 //message flow_list {
 //    repeated export_flow flows = 1;
 //}

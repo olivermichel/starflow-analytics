@@ -31,6 +31,9 @@ TEST_CASE("CLFR", "[types::CLFR]")
 	SECTION("CLFR(proto), to_proto()")
 	{
 		types::CLFR clfr1(k1, 1, 5);
+		clfr1.add_packet(types::Packet(32323, 16));
+		clfr1.add_packet(types::Packet(24222, 32));
+
 		proto::clfr proto_clfr = clfr1.to_proto();
 		types::CLFR clfr2(proto_clfr);
 
@@ -39,5 +42,7 @@ TEST_CASE("CLFR", "[types::CLFR]")
 		CHECK(clfr1.table_id() == clfr2.table_id());
 		CHECK(clfr1.complete() == clfr2.complete());
 		CHECK(clfr1.evict_ts() == clfr2.evict_ts());
+		CHECK(clfr1.packets().size() == clfr2.packets().size());
+		CHECK(clfr1.packets().front() == clfr2.packets().front());
 	}
 }
