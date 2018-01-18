@@ -1,0 +1,13 @@
+language: cpp
+
+matrix:
+  include:
+    - os: osx
+      compiler: clang
+      env: CTEST_TARGET_SYSTEM=MacOS-clang
+
+script:
+  - mkdir -p build
+  - cd build
+  - cmake ..
+  - make
