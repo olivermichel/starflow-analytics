@@ -1,13 +1,9 @@
+
 language: cpp
-
-matrix:
-  include:
-    - os: osx
-      compiler: clang
-      env: CTEST_TARGET_SYSTEM=MacOS-clang
-
+sudo: required
+services:
+  - docker
+before_install:
+  - docker build -t starflow_analytics .
 script:
-  - mkdir -p build
-  - cd build
-  - cmake ..
-  - make
+  - docker run starflow_analytics /bin/sh -c "cd /root/starflow_analytics/build; make test"
