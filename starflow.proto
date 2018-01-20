@@ -11,13 +11,6 @@ message HelloRequest { }
 
 message HelloReply { }
 
-//message raw_packet {
-//    int64 ts  = 1;
-//    int32 len = 2;
-//    string pl = 3;
-//}
-//
-
 message packet {
     int64 ts          = 1;
     int32 len         = 2;
@@ -49,6 +42,6 @@ message clfr {
     repeated packet packets = 6;
 }
 
-//message flow_list {
-//    repeated export_flow flows = 1;
-//}
+message flow_list {
+    repeated clfr flows = 1;
+}
