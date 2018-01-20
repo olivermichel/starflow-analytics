@@ -1,9 +1,13 @@
 
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.5)
 project(starflow_analytics)
 
 set(CMAKE_CXX_STANDARD 14) # raft requires C++14
 set(CMAKE_CXX_FLAGS -DL1D_CACHE_LINE_SIZE=64) # 64 bytes for x86_64 -- adapt for used arch
+
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    link_libraries(pthread)
+endif()
 
 include(cmake/common.cmake)
 

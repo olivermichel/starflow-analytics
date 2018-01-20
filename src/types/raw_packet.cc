@@ -1,6 +1,8 @@
 
 #include "raw_packet.h"
 
+#include <cstring> // for std::memcpy (gcc compatibility)
+
 starflow::types::RawPacket::RawPacket(const starflow::types::RawPacket& copy_from)
 	: ts(copy_from.ts), len(copy_from.len), pl(nullptr)
 {

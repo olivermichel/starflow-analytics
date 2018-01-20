@@ -44,11 +44,10 @@ void starflow::modules::TZSPReceiver::operator()() throw (std::runtime_error, st
 	struct sockaddr from_addr = {};
 	socklen_t from_len = sizeof(from_addr);
 
-	struct sockaddr_in in_addr = {
-		.sin_family = AF_INET,
-		.sin_addr = { .s_addr = htonl(INADDR_ANY) },
-		.sin_port = _listen_port
-	};
+	struct sockaddr_in in_addr {};
+	in_addr.sin_family = AF_INET;
+	in_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+	in_addr.sin_port = _listen_port;
 
 	if (bind(_sock, (struct sockaddr*) &in_addr, sizeof(in_addr)))
 		throw std::runtime_error("TZSPReceiver: could not bind socket");
