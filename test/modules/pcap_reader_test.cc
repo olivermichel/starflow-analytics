@@ -19,14 +19,14 @@ TEST_CASE("PCAPReader", "[PCAPReader]")
 	SECTION("operator():throws a logic error if in emit mode and no callback set")
 	{
 		modules::PCAPReader r;
-		r.set_file_name("test/data/http.pcap");
+		r.set_file_name("test/data/test.pcap");
 		CHECK_THROWS_AS(r(), std::logic_error);
 	}
 
 	SECTION("operator():does not throw an error if in store mode and no callback set")
 	{
 		modules::PCAPReader r;
-		r.set_file_name("test/data/http.pcap");
+		r.set_file_name("test/data/test.pcap");
 		r.set_mode(modules::PCAPReader::mode::store);
 		CHECK_NOTHROW(r());
 	}
@@ -43,11 +43,11 @@ TEST_CASE("PCAPReader", "[PCAPReader]")
 	{
 		modules::PCAPReader r;
 		r.set_mode(modules::PCAPReader::mode::store);
-		r.set_file_name("test/data/http.pcap");
+		r.set_file_name("test/data/test.pcap");
 
 		r();
 
-		CHECK(r.packets().size() == 43);
+		CHECK(r.packets().size() == 36);
 
 		auto i = std::begin(r.packets());
 

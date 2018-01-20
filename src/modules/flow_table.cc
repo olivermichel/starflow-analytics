@@ -20,8 +20,11 @@ void starflow::modules::FlowTable::add_packet(types::Key key, types::Packet pack
 	auto flow_table_iter = _lookup_and_insert(std::move(key), std::move(packet));
 	_check_evict(flow_table_iter, ts);
 
-	if ((ts.count() - _last_to_check.count()) > _to_check_interval.count())
+	if ((ts.count() - _last_to_check.count()) > _to_check_interval.count()) {
+		// these two operations can be combined (reduce runtime from 2N to N):
 		_check_timeouts(ts);
+		_check_last_ack();
+	}
 }
 
 void starflow::modules::FlowTable::add_packet(std::pair<types::Key, types::Packet> pair)
@@ -35,7 +38,8 @@ void starflow::modules::FlowTable::set_mode(enum mode m)
 	_mode = m;
 }
 
-void starflow::modules::FlowTable::set_callback(modules::FlowTable::export_flow_callback_t&& callback)
+void starflow::modules::FlowTable::set_callback(
+	modules::FlowTable::export_flow_callback_t&& callback)
 {
 	_callback = std::move(callback);
 }
@@ -60,24 +64,34 @@ unsigned long long starflow::modules::FlowTable::count_flows() const
 	return _active_flows.size();
 }
 
+const starflow::modules::FlowTable::flow_table_t& starflow::modules::FlowTable::flows() const
+{
+	return _active_flows;
+}
+
 const starflow::modules::FlowTable::exported_flows_table_t&
 	starflow::modules::FlowTable::exported_flows() const
 {
 	return _exported_flows;
 }
 
-void starflow::modules::FlowTable::force_export_udp(bool complete)
+void starflow::modules::FlowTable::_force_export_udp(bool complete)
 {
 	for (auto i = std::begin(_active_flows); i != std::end(_active_flows);)
 		i = i->first.ip_proto == (uint8_t) _ip_proto::udp ?
 			_evict_flow(i, i->second.last_packet().ts, complete) : std::next(i, 1);
 }
 
-void starflow::modules::FlowTable::force_export_tcp(bool complete)
+void starflow::modules::FlowTable::_force_export_tcp(bool complete)
 {
 	for (auto i = std::begin(_active_flows); i != std::end(_active_flows);)
 		i = i->first.ip_proto == (uint8_t) _ip_proto::tcp ?
 			_evict_flow(i, i->second.last_packet().ts, complete) : std::next(i, 1);
+}
+
+void starflow::modules::FlowTable::_force_check_last_ack()
+{
+	_check_last_ack();
 }
 
 starflow::modules::FlowTable::flow_table_t::iterator
@@ -131,6 +145,17 @@ void starflow::modules::FlowTable::_check_timeouts(std::chrono::microseconds tri
 	_last_to_check = trigger_ts;
 }
 
+void starflow::modules::FlowTable::_check_last_ack()
+{
+	auto is_last_ack = [](types::CLFR& flow) -> bool {
+		return flow.key().ip_proto == (uint8_t) _ip_proto::tcp && flow.n_packets() == 1
+			   && flow.packets().front().features.tcp_flags.is_ack();
+	};
+
+	for (auto i = std::begin(_active_flows); i != std::end(_active_flows);)
+		i = is_last_ack(i->second) ? _delete_flow(i) : std::next(i, 1);
+}
+
 starflow::modules::FlowTable::flow_table_t::iterator
 	starflow::modules::FlowTable::_evict_flow(const flow_table_t::iterator& i,
 											  std::chrono::microseconds evict_ts, bool complete)
@@ -145,6 +170,14 @@ starflow::modules::FlowTable::flow_table_t::iterator
 
 	_n_packets -= i->second.n_packets();
 	_n_flows_processed += 1;
+	_n_packets_processed += i->second.n_packets();
 
+	return _active_flows.erase(i);
+}
+
+starflow::modules::FlowTable::flow_table_t::iterator
+	starflow::modules::FlowTable::_delete_flow(const flow_table_t::iterator& i)
+{
+	_n_packets -= i->second.n_packets();
 	return _active_flows.erase(i);
 }

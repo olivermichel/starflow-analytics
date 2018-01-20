@@ -270,11 +270,11 @@ TEST_CASE("FlowTable", "[modules::FlowTable]")
 		flow_table.set_mode(modules::FlowTable::mode::store);
 
 		modules::PCAPReader pcap_reader;
-		pcap_reader.set_file_name("test/data/http.pcap");
+		pcap_reader.set_file_name("test/data/test.pcap");
 		pcap_reader.set_mode(modules::PCAPReader::mode::store);
 		REQUIRE_NOTHROW(pcap_reader());
 
-		REQUIRE(pcap_reader.packets().size() == 43);
+		REQUIRE(pcap_reader.packets().size() == 36);
 
 		for (auto& packet : pcap_reader.packets()) {
 			auto pair = parser(packet);
@@ -282,7 +282,19 @@ TEST_CASE("FlowTable", "[modules::FlowTable]")
 		}
 
 		CHECK(flow_table.exported_flows().size() == 2);
-		flow_table.force_export_udp(true);
+		flow_table._force_export_udp(true);
 		CHECK(flow_table.exported_flows().size() == 4);
+
+		CHECK(flow_table.count_packets() == 1);
+		CHECK(flow_table.count_flows() == 1);
+
+		flow_table._force_check_last_ack();
+		CHECK(flow_table.count_packets() == 0);
+		CHECK(flow_table.count_flows() == 0);
+
+		CHECK(flow_table.count_flows_processed() == 4);
+
+		// 1 packet has been deleted as part of last-ack removal, so count is 36-1 = 35
+		CHECK(flow_table.count_packets_processed() == 35);
 	}
 }

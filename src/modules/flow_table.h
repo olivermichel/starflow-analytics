@@ -20,7 +20,7 @@ namespace starflow {
 
 		public:
 
-			enum class incomplete_evict_policy { none, to, pkt_count };
+//			enum class incomplete_evict_policy { none, to, pkt_count };
 			enum class mode { callback, store };
 
 			FlowTable() = default;
@@ -49,33 +49,38 @@ namespace starflow {
 			unsigned long long count_packets() const;
 			unsigned long long count_flows() const;
 
+			const flow_table_t& flows() const;
+
 			const exported_flows_table_t& exported_flows() const;
 
-			void force_export_tcp(bool complete = false);
-			void force_export_udp(bool complete = false);
+			// for unit tests:
+			void _force_export_tcp(bool complete = false);
+			void _force_export_udp(bool complete = false);
+			void _force_check_last_ack();
 
 		private:
 
-			unsigned _id                                     = 0;
-			flow_table_t _active_flows                       = {};
-			exported_flows_table_t _exported_flows           = {};
+			unsigned _id                                       = 0;
+			flow_table_t _active_flows                         = {};
+			exported_flows_table_t _exported_flows             = {};
 
-			std::chrono::microseconds _to_check_interval     = std::chrono::seconds(10);
-			std::chrono::microseconds _udp_to                = std::chrono::seconds(30);
-			std::chrono::microseconds _last_to_check         = std::chrono::seconds(0);
+			std::chrono::microseconds _to_check_interval       = std::chrono::seconds(10);
 
-			FlowTable::mode _mode                            = mode::callback;
+			std::chrono::microseconds _udp_to                  = std::chrono::seconds(30);
+			std::chrono::microseconds _last_to_check           = std::chrono::seconds(0);
+
+			FlowTable::mode _mode                              = mode::callback;
 /*
 			incomplete_evict_policy _incomplete_evict_policy = incomplete_evict_policy::none;
 			std::chrono::microseconds _incomplete_evict_to   = std::chrono::seconds(10);
 			unsigned long _incomplete_evict_pkt_count        = 50;
 */
-			unsigned long long _next_id                      = 1;
+			unsigned long long _next_id                        = 1;
 
-			unsigned long long _n_packets_processed          = 0;
-			unsigned long long _n_flows_processed            = 0;
-			unsigned long long _n_packets                    = 0;
-			unsigned long long _n_flows                      = 0;
+			unsigned long long _n_packets_processed            = 0;
+			unsigned long long _n_flows_processed              = 0;
+			unsigned long long _n_packets                      = 0;
+			unsigned long long _n_flows                        = 0;
 
 			export_flow_callback_t _callback = nullptr;
 
@@ -85,8 +90,12 @@ namespace starflow {
 
 			void _check_timeouts(std::chrono::microseconds trigger_ts);
 
+			void _check_last_ack();
+
 			flow_table_t::iterator _evict_flow(const flow_table_t::iterator& i,
 											   std::chrono::microseconds evict_ts, bool complete);
+
+			flow_table_t::iterator _delete_flow(const flow_table_t::iterator& i);
 		};
 	}
 }
