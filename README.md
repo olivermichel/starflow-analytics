@@ -11,15 +11,19 @@
 
 ### Build
 
-Requires C++14 compatible compiler.
+* requires cmake >= 3.5 and gcc >= 6
 
-    mkdir build && cd build
-    cmake ..
-    make
-    
+```bash
+mkdir build && cd build
+cmake ..
+make
+```
+
 ### Run Unit Tests
 
-    make test
+```bash
+make test
+```
 
 ### Kernels
 
