@@ -2,63 +2,98 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
-#include "import/pcap_replay.h"
-#include "flow_table.h"
+
 #include "proto/starflow.pb.h"
+#include "kernels/flow_table.h"
+#include "kernels/raw_packet_parser.h"
+#include "kernels/pcap_file_reader.h"
+#include "kernels/clfr_file_exporter.h"
+
+#include <cxxopts/cxxopts.h>
+
+struct options {
+	std::string input;
+	std::string output;
+	std::string encapsulation;
+	bool verbose;
+};
+
+void _print_help(cxxopts::Options& opts, int exit_code = 0)
+{
+	(exit_code == 0 ? std::cout : std::cerr) << opts.help({""}) << std::endl;
+	exit(exit_code);
+}
+
+const options _parse_cli_options(int argc, char** argv)
+{
+	options parse_result { };
+
+	try {
+		cxxopts::Options opts("flow_file_exporter",
+							  " - Generates a file containing all CLFRs from a given PCAP file.");
+
+		opts.add_options()
+			("i,input", "PCAP input file (required)", cxxopts::value<std::string>(), "FILE")
+			("o,output", "CLFR output file (required)", cxxopts::value<std::string>(), "FILE")
+			("e,encapsulation", "PCAP outer header, default: eth",
+			 cxxopts::value<std::string>(), "eth|ip")
+			("v,verbose", "print status messages")
+			("h,help", "print this help message");
+
+		auto parsed_opts = opts.parse(argc, argv);
+
+		if (parsed_opts.count("h"))
+			_print_help(opts);
+
+		if (parsed_opts.count("i"))
+			parse_result.input = parsed_opts["i"].as<std::string>();
+		else
+			_print_help(opts, 1);
+
+		if (parsed_opts.count("o"))
+			parse_result.output = parsed_opts["o"].as<std::string>();
+		else
+			_print_help(opts, 1);
+
+		if (parsed_opts.count("e")) {
+			std::string e = parsed_opts["e"].as<std::string>();
+
+			if (e == "eth" || e == "ip")
+				parse_result.encapsulation = e;
+			else
+				_print_help(opts, 1);
+		} else {
+			parse_result.encapsulation = "eth";
+		}
+
+		parse_result.verbose = parsed_opts.count("v") >= 1;
+
+	} catch (const cxxopts::OptionException& e) {
+		std::cerr << e.what() << std::endl;
+	}
+
+	return parse_result;
+}
 
 int main(int argc, char** argv)
 {
-	using namespace starflow;
+	namespace sf = starflow;
+	const auto options = _parse_cli_options(argc, argv);
 
-	if (argc != 3) {
-		std::cerr << "usage: pcap_flow_exporter <read_from.pcap> <write_to.protobuf>" << std::endl;
-		return 1;
-	}
+	auto hdr_type = options.encapsulation == "ip" ?
+					sf::kernels::RawPacketParser::outer_header_type::ip
+					: sf::kernels::RawPacketParser::outer_header_type::eth;
 
-	std::string pcap_file_name     = std::string(argv[1]);
-	std::string protobuf_file_name = std::string(argv[2]);
+	auto cap_len  = starflow::kernels::RawPacketParser::capture_length::trunc;
 
-	proto::flow_list flow_list;
-	std::ofstream of(protobuf_file_name);
+	sf::kernels::PCAPFileReader pcap_file_reader(options.input);
+	sf::kernels::RawPacketParser raw_packet_parser(hdr_type, cap_len);
+	sf::kernels::FlowTable flow_table {};
+	sf::kernels::CLFRFileExporter clfr_file_exporter(options.output, options.verbose);
 
-	auto start1 = std::chrono::steady_clock::now();
-	auto start2 = std::chrono::steady_clock::now();
-
-	FlowTable flow_table([&flow_table, &flow_list, &start2](FlowTable::key_t key, Flow flow,
-											   std::chrono::microseconds ts,
-											   starflow::FlowTable::eviction_type e) {
-
-		proto::export_flow* flow_proto = flow_list.add_flows();
-		flow_proto->set_allocated_flow(new proto::flow(flow.to_proto()));
-		flow_proto->set_allocated_key(new proto::key(key.to_proto()));
-
-		int flows_exported = flow_list.flows_size();
-
-		if (flows_exported % 100 == 0) {
-
-			unsigned long flows_in_table = flow_table.count_flows();
-			auto now = std::chrono::steady_clock::now();
-			auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - start2);
-
-			std::cout << std::setw(7) << flows_exported << " flows, " << std::setw(5) << std::fixed
-					  << std::setprecision(2) << (double) flow_list.ByteSize() / 1048576 << " MB, "
-					  << duration.count() << " ms, " << flows_in_table << " flows" << std::endl;
-
-			start2 = now;
-		}
-	});
-
-	starflow::import::PCAPReplay(pcap_file_name, false)(
-		[&flow_table](struct pcap_pkthdr* hdr, const unsigned char* buf) {
-
-		flow_table.add_packet(import::PCAPReplay::us_from_timeval(hdr->ts),(unsigned) hdr->caplen,
-							  buf, FlowTable::outer_header_type::eth);
-	});
-
-	flow_list.SerializeToOstream(&of);
-	of.close();
-
-	std::cout << flow_list.flows_size() << " flows written to " << protobuf_file_name << std::endl;
+	raft::map m;
+	m += pcap_file_reader >> raw_packet_parser >> flow_table >> clfr_file_exporter;
+	m.exe();
 
 	return 0;
 }

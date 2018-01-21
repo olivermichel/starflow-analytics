@@ -40,6 +40,7 @@ set(TYPES_SRC
 
 set(KERNELS_DIR ${CMAKE_CURRENT_LIST_DIR}/src/kernels)
 set(KERNELS_SRC
+        ${KERNELS_DIR}/clfr_file_exporter.h ${KERNELS_DIR}/clfr_file_exporter.cc
         ${KERNELS_DIR}/tzsp_receiver.h ${KERNELS_DIR}/tzsp_receiver.cc
         ${KERNELS_DIR}/flow_table.h ${KERNELS_DIR}/flow_table.cc
         ${KERNELS_DIR}/live_capture.h ${KERNELS_DIR}/live_capture.cc
