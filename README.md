@@ -36,6 +36,7 @@ make test
 |PCAPFileReader      |*none*                                |RawPacket                             |
 |RawPacketParser     |RawPacket                             |Key, Packet                           |
 |TZSPReceiver        |*none*                                |RawPacket                             |
+|CLFRFileExporter    |CLFR                                  |*none*                                |
 
 ### References
 
