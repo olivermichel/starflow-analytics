@@ -31,12 +31,14 @@ make test
 
 |Kernel Name         |Input                                 |Output                                |
 |--------------------|--------------------------------------|--------------------------------------|
+|CLFRFileExporter    |CLFR                                  |*none*                                |
 |CLFRTable           |Key, Packet                           |CLFR                                  |
 |LiveCapture         |*none*                                |RawPacket                             |
+|PacketFilter        |Key, Packet                           |Key, Packet                           |
+|PacketPrinter       |Key, Packet                           |Key, Packet *or none*                 |
 |PCAPFileReader      |*none*                                |RawPacket                             |
 |RawPacketParser     |RawPacket                             |Key, Packet                           |
 |TZSPReceiver        |*none*                                |RawPacket                             |
-|CLFRFileExporter    |CLFR                                  |*none*                                |
 
 ### References
 
