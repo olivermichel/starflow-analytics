@@ -25,6 +25,7 @@ set(MODULES_SRC
         ${MODULES_DIR}/ui_server.h ${MODULES_DIR}/ui_server.cc
         ${MODULES_DIR}/ui_adapter.h ${MODULES_DIR}/ui_adapter.cc
         ${MODULES_DIR}/flow_table.h ${MODULES_DIR}/flow_table.cc
+        ${MODULES_DIR}/filter.h ${MODULES_DIR}/filter.cc
         ${MODULES_DIR}/live_capture.h ${MODULES_DIR}/live_capture.cc
         ${MODULES_DIR}/pcap_reader.h ${MODULES_DIR}/pcap_reader.cc
         ${MODULES_DIR}/tzsp_receiver.h ${MODULES_DIR}/tzsp_receiver.cc
@@ -41,11 +42,12 @@ set(TYPES_SRC
 set(KERNELS_DIR ${CMAKE_CURRENT_LIST_DIR}/src/kernels)
 set(KERNELS_SRC
         ${KERNELS_DIR}/clfr_file_exporter.h ${KERNELS_DIR}/clfr_file_exporter.cc
-        ${KERNELS_DIR}/tzsp_receiver.h ${KERNELS_DIR}/tzsp_receiver.cc
         ${KERNELS_DIR}/flow_table.h ${KERNELS_DIR}/flow_table.cc
         ${KERNELS_DIR}/live_capture.h ${KERNELS_DIR}/live_capture.cc
+        ${KERNELS_DIR}/packet_filter.h ${KERNELS_DIR}/packet_filter.cc
         ${KERNELS_DIR}/pcap_file_reader.h ${KERNELS_DIR}/pcap_file_reader.cc
-        ${KERNELS_DIR}/raw_packet_parser.h ${KERNELS_DIR}/raw_packet_parser.cc)
+        ${KERNELS_DIR}/raw_packet_parser.h ${KERNELS_DIR}/raw_packet_parser.cc
+        ${KERNELS_DIR}/tzsp_receiver.h ${KERNELS_DIR}/tzsp_receiver.cc)
 
 set(ETC_DIR ${CMAKE_CURRENT_LIST_DIR}/src/etc)
 set(ETC_SRC
