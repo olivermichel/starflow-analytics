@@ -16,6 +16,9 @@ include(cmake/dep/grpc.cmake)
 include(cmake/dep/pcap.cmake)
 include(cmake/dep/protobuf.cmake)
 include(cmake/dep/raft.cmake)
+include(cmake/dep/cxxopts.cmake)
+
+include_directories(ext/include)
 
 set(MODULES_DIR ${CMAKE_CURRENT_LIST_DIR}/src/modules)
 set(MODULES_SRC
@@ -68,7 +71,8 @@ add_custom_command(
 
 include(cmake/exe/test_runner.cmake)
 include(cmake/exe/packet_capture.cmake)
+include(cmake/exe/pcap_flow_file_exporter.cmake)
 
 #include(cmake/exe/clfr_converter.cmake)
 #include(cmake/exe/clfr_driver.cmake)
-#include(cmake/exe/pcap_flow_file_exporter.cmake)
+

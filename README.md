@@ -9,6 +9,7 @@
 * libprotobuf & protoc [[3]](https://github.com/google/protobuf)
 * libgrpc [[4]](https://github.com/grpc/grpc)
 * catch [[5]](https://github.com/catchorg/Catch2) (is automatically integrated when running cmake)
+* cxxopts [[6]](https://github.com/jarro2783/cxxopts) (is automatically integrated when running cmake)
 
 ### Build
 
@@ -47,3 +48,5 @@ make test
 [4] https://github.com/grpc/grpc
 
 [5] https://github.com/catchorg/Catch2
+
+[6] https://github.com/jarro2783/cxxopts

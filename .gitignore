@@ -9,3 +9,4 @@ src/proto/
 test/include/catch.h
 !test/data/*.pcap
 !test/data/*.bin
+ext/include/cxxopts/cxxopts.h
