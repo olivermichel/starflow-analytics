@@ -32,11 +32,13 @@ make test
 |Kernel Name         |Input                                 |Output                                |
 |--------------------|--------------------------------------|--------------------------------------|
 |CLFRFileExporter    |CLFR                                  |*none*                                |
-|CLFRTable           |Key, Packet                           |CLFR                                  |
+|FlowTable           |Key, Packet                           |CLFR                                  |
 |LiveCapture         |*none*                                |RawPacket                             |
+|Map                 |*any*                                 |*any*                                 |
 |PacketFilter        |Key, Packet                           |Key, Packet                           |
 |PacketPrinter       |Key, Packet                           |Key, Packet *or none*                 |
 |PCAPFileReader      |*none*                                |RawPacket                             |
+|Printer             |*any*                                 |*any or none*                         |
 |RawPacketParser     |RawPacket                             |Key, Packet                           |
 |TZSPReceiver        |*none*                                |RawPacket                             |
 
