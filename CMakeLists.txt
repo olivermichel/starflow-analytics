@@ -22,14 +22,15 @@ include_directories(ext/include)
 
 set(MODULES_DIR ${CMAKE_CURRENT_LIST_DIR}/src/modules)
 set(MODULES_SRC
-        ${MODULES_DIR}/ui_server.h ${MODULES_DIR}/ui_server.cc
-        ${MODULES_DIR}/ui_adapter.h ${MODULES_DIR}/ui_adapter.cc
-        ${MODULES_DIR}/flow_table.h ${MODULES_DIR}/flow_table.cc
         ${MODULES_DIR}/filter.h ${MODULES_DIR}/filter.cc
+        ${MODULES_DIR}/flow_table.h ${MODULES_DIR}/flow_table.cc
         ${MODULES_DIR}/live_capture.h ${MODULES_DIR}/live_capture.cc
         ${MODULES_DIR}/pcap_reader.h ${MODULES_DIR}/pcap_reader.cc
+        ${MODULES_DIR}/raw_packet_parser.h ${MODULES_DIR}/raw_packet_parser.cc
         ${MODULES_DIR}/tzsp_receiver.h ${MODULES_DIR}/tzsp_receiver.cc
-        ${MODULES_DIR}/raw_packet_parser.h ${MODULES_DIR}/raw_packet_parser.cc)
+        ${MODULES_DIR}/ui_adapter.h ${MODULES_DIR}/ui_adapter.cc
+        ${MODULES_DIR}/ui_client.h ${MODULES_DIR}/ui_client.cc
+        ${MODULES_DIR}/ui_service.h ${MODULES_DIR}/ui_service.cc)
 
 set(TYPES_DIR ${CMAKE_CURRENT_LIST_DIR}/src/types)
 set(TYPES_SRC
@@ -55,9 +56,9 @@ set(KERNELS_SRC
 
 set(ETC_DIR ${CMAKE_CURRENT_LIST_DIR}/src/etc)
 set(ETC_SRC
-        ${ETC_DIR}/timer.h ${ETC_DIR}/timer.cc
+        ${ETC_DIR}/format_helpers.h ${ETC_DIR}/format_helpers.cc
         ${ETC_DIR}/tcp_flow_state.h ${ETC_DIR}/tcp_flow_state.cc
-        ${ETC_DIR}/format_helpers.h ${ETC_DIR}/format_helpers.cc)
+        ${ETC_DIR}/timer.h ${ETC_DIR}/timer.cc)
 
 set(PROTO_DIR ${CMAKE_CURRENT_LIST_DIR}/src/proto)
 set(PROTO_SRC
@@ -79,6 +80,7 @@ add_custom_command(
 include(cmake/exe/test_runner.cmake)
 include(cmake/exe/packet_capture.cmake)
 include(cmake/exe/pcap_flow_file_exporter.cmake)
+include(cmake/exe/test_ui_client.cmake)
 
 #include(cmake/exe/clfr_converter.cmake)
 #include(cmake/exe/clfr_driver.cmake)

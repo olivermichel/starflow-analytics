@@ -10,7 +10,7 @@
 
 namespace starflow {
 	namespace modules {
-		class UIServer final : public proto::UIServer::Service
+		class UIService final : public proto::UIService::Service
 		{
 			grpc::Status SayHello(grpc::ServerContext* c, const proto::HelloRequest* req,
 								  proto::HelloReply* rep) override;

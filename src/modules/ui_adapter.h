@@ -7,7 +7,7 @@
 
 #include <grpc++/grpc++.h>
 
-#include "ui_server.h"
+#include "ui_service.h"
 
 namespace starflow {
 	namespace modules {
@@ -19,7 +19,7 @@ namespace starflow {
 			void operator()();
 
 		private:
-			std::unique_ptr<UIServer> _ui_server  = nullptr;
+			std::unique_ptr<UIService> _ui_server  = nullptr;
 			std::unique_ptr<grpc::Server> _server = nullptr;
 		};
 	}
