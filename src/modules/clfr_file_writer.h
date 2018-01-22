@@ -6,6 +6,7 @@
 #include <google/protobuf/io/zero_copy_stream.h>
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 #include <iostream>
+#include <stdexcept>
 #include <string>
 
 #include "../types/clfr.h"
@@ -17,8 +18,10 @@ namespace starflow {
 		public:
 			CLFRFileWriter() = delete;
 			explicit CLFRFileWriter(const std::string& file_name, bool debug = false,
-									std::ostream& debug_os = std::cout);
-			void write_clfr(const types::CLFR& clfr);
+									std::ostream& debug_os = std::cout) throw (std::runtime_error);
+			void write_clfr(const types::CLFR& clfr) throw (std::logic_error);
+			inline unsigned long long total_bytes() const { return _total_bytes; }
+			inline unsigned long long total_clfrs() const { return _total_clfrs; }
 			void close();
 			virtual ~CLFRFileWriter();
 
@@ -33,6 +36,8 @@ namespace starflow {
 			google::protobuf::io::CodedOutputStream* _coded_out = nullptr;
 			unsigned long long _total_bytes = 0;
 			unsigned long long _total_clfrs = 0;
+
+			void _write_debug_out() const;
 		};
 	}
 }
