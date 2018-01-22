@@ -22,6 +22,8 @@ include_directories(ext/include)
 
 set(MODULES_DIR ${CMAKE_CURRENT_LIST_DIR}/src/modules)
 set(MODULES_SRC
+        ${MODULES_DIR}/clfr_file_reader.h ${MODULES_DIR}/clfr_file_reader.cc
+        ${MODULES_DIR}/clfr_file_writer.h ${MODULES_DIR}/clfr_file_writer.cc
         ${MODULES_DIR}/filter.h ${MODULES_DIR}/filter.cc
         ${MODULES_DIR}/flow_table.h ${MODULES_DIR}/flow_table.cc
         ${MODULES_DIR}/live_capture.h ${MODULES_DIR}/live_capture.cc
@@ -84,4 +86,3 @@ include(cmake/exe/test_ui_client.cmake)
 
 #include(cmake/exe/clfr_converter.cmake)
 #include(cmake/exe/clfr_driver.cmake)
-

@@ -45,14 +45,9 @@ make test
 
 ### References
 
-[1] https://github.com/RaftLib/RaftLib
-
-[2] http://www.tcpdump.org
-
-[3] https://github.com/google/protobuf
-
-[4] https://github.com/grpc/grpc
-
-[5] https://github.com/catchorg/Catch2
-
+[1] https://github.com/RaftLib/RaftLib \
+[2] http://www.tcpdump.org \
+[3] https://github.com/google/protobuf \
+[4] https://github.com/grpc/grpc \
+[5] https://github.com/catchorg/Catch2 \
 [6] https://github.com/jarro2783/cxxopts

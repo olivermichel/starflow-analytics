@@ -2,6 +2,7 @@
 set(TEST_SRC
         test/etc/tcp_flow_state_test.cc
         test/etc/timer_test.cc
+        test/modules/clfr_file_writer_reader_test.cc
         test/modules/filter_test.cc
         test/modules/flow_table_test.cc
         test/modules/pcap_reader_test.cc
@@ -28,6 +29,8 @@ target_link_libraries(test_runner grpc++)
 enable_testing()
 
 add_test(NAME CLFR WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND test_runner CLFR)
+add_test(NAME CLFRWFileWriter/CLFRFileReader WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    COMMAND test_runner CLFRFileWriter/CLFRFileReader)
 add_test(NAME Features WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND test_runner Features)
 add_test(NAME Filter WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND test_runner Filter)
 add_test(NAME FlowTable WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND test_runner FlowTable)
@@ -35,6 +38,7 @@ add_test(NAME Key WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND test_runner Ke
 add_test(NAME Packet WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND test_runner Packet)
 add_test(NAME PCAPReader WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND test_runner PCAPReader)
 add_test(NAME RawPacket WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND test_runner RawPacket)
-add_test(NAME RawPacketParser WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND test_runner RawPacketParser)
+add_test(NAME RawPacketParser WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    COMMAND test_runner RawPacketParser)
 add_test(NAME TCPFlowState WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND test_runner TCPFlowState)
 add_test(NAME Timer WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND test_runner Timer)
