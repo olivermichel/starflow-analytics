@@ -15,21 +15,43 @@ TEST_CASE("CLFRFileWriter/CLFRFileReader", "[modules::CLFRFileWriter][modules::C
 	clfr1.add_packet(types::Packet(24222, 32));
 	clfr2.add_packet(types::Packet(9723, 64));
 
+	types::CLFR read_clfr1;
+	types::CLFR read_clfr2;
+
 	SECTION("write a clfr file")
 	{
-		modules::CLFRFileWriter writer("test_clfrs.clfr");
+		modules::CLFRFileWriter writer("test.clfr");
 
 		CHECK(writer.total_bytes() == 0);
 		CHECK(writer.total_clfrs() == 0);
 
-		CHECK_NOTHROW(writer.write_clfr(clfr1));
+		writer.write_clfr(clfr1);
 		CHECK(writer.total_bytes() == 50);
 		CHECK(writer.total_clfrs() == 1);
 
-		CHECK_NOTHROW(writer.write_clfr(clfr2));
+		writer.write_clfr(clfr2);
 		CHECK(writer.total_bytes() == 86);
 		CHECK(writer.total_clfrs() == 2);
 
 		writer.close();
+	}
+
+	SECTION("read a clfr file")
+	{
+		modules::CLFRFileReader reader("test.clfr");
+
+		CHECK(reader.total_clfrs() == 0);
+//
+		reader.read_clfr(read_clfr1);
+		CHECK_FALSE(reader.end());
+//
+		reader.read_clfr(read_clfr2);
+		CHECK(reader.end());
+
+//		CHECK(clfr1 == read_clfr1);
+//		CHECK(clfr2 == read_clfr2);
+//
+		reader.close();
+
 	}
 }

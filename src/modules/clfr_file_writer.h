@@ -27,13 +27,13 @@ namespace starflow {
 
 		private:
 			std::string _buf;
-			std::fstream _ofs;
+			std::ofstream _ofs;
+			google::protobuf::io::OstreamOutputStream* _raw_out;
+			google::protobuf::io::CodedOutputStream* _coded_out;
 			unsigned _obj_len = 0;
 			bool _closed = false;
 			bool _debug = false;
 			std::ostream& _debug_os = std::cout;
-			google::protobuf::io::OstreamOutputStream* _raw_out = nullptr;
-			google::protobuf::io::CodedOutputStream* _coded_out = nullptr;
 			unsigned long long _total_bytes = 0;
 			unsigned long long _total_clfrs = 0;
 
