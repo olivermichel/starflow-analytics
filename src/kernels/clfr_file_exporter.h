@@ -7,6 +7,7 @@
 #include <fstream>
 
 #include "../proto/starflow.pb.h"
+#include "../modules/clfr_file_writer.h"
 
 namespace starflow {
 	namespace kernels {
@@ -17,8 +18,7 @@ namespace starflow {
 			raft::kstatus run() override;
 			~CLFRFileExporter() override;
 		private:
-			std::ofstream _ofs;
-			proto::flow_list _proto_flows;
+			modules::CLFRFileWriter _clfr_file_writer;
 			bool _verbose;
 			std::chrono::time_point<std::chrono::steady_clock> _start1;
 			std::chrono::time_point<std::chrono::steady_clock> _start2;

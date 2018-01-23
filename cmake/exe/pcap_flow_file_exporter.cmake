@@ -5,6 +5,7 @@ add_executable(pcap_flow_file_exporter
         src/kernels/flow_table.cc
         src/kernels/pcap_file_reader.cc
         src/kernels/raw_packet_parser.cc
+        src/modules/clfr_file_writer.cc
         src/modules/flow_table.cc
         src/modules/pcap_reader.cc
         src/modules/raw_packet_parser.cc
