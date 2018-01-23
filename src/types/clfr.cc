@@ -97,3 +97,18 @@ unsigned long starflow::types::CLFR::n_bytes() const
 	return (unsigned long) std::accumulate(std::begin(_packets), std::end(_packets), 0,
 		[](int s, const types::Packet& p) -> long { return s += p.len; });
 }
+
+bool starflow::types::CLFR::operator==(const starflow::types::CLFR& other) const
+{
+	return _key == other._key
+		&& _id  == other._id
+		&& _evict_ts == other._evict_ts
+		&& _complete == other._complete
+		&& _table_id == other._table_id
+		&& _packets == other._packets;
+}
+
+bool starflow::types::CLFR::operator!=(const starflow::types::CLFR& other) const
+{
+	return !operator==(other);
+}

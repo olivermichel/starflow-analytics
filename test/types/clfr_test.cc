@@ -44,5 +44,6 @@ TEST_CASE("CLFR", "[types::CLFR]")
 		CHECK(clfr1.evict_ts() == clfr2.evict_ts());
 		CHECK(clfr1.packets().size() == clfr2.packets().size());
 		CHECK(clfr1.packets().front() == clfr2.packets().front());
+		CHECK(clfr1 == clfr2);
 	}
 }

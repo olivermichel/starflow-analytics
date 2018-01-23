@@ -52,6 +52,9 @@ namespace starflow {
 			unsigned long n_packets() const;
 			unsigned long n_bytes() const;
 
+			bool operator==(const CLFR& other) const;
+			bool operator!=(const CLFR& other) const;
+
 			virtual ~CLFR() = default;
 
 		private:

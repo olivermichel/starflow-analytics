@@ -39,19 +39,17 @@ TEST_CASE("CLFRFileWriter/CLFRFileReader", "[modules::CLFRFileWriter][modules::C
 	SECTION("read a clfr file")
 	{
 		modules::CLFRFileReader reader("test.clfr");
-
 		CHECK(reader.total_clfrs() == 0);
-//
+
 		reader.read_clfr(read_clfr1);
 		CHECK_FALSE(reader.end());
-//
+
 		reader.read_clfr(read_clfr2);
 		CHECK(reader.end());
 
-//		CHECK(clfr1 == read_clfr1);
-//		CHECK(clfr2 == read_clfr2);
-//
-		reader.close();
+		CHECK(clfr1 == read_clfr1);
+		CHECK(clfr2 == read_clfr2);
 
+		reader.close();
 	}
 }
