@@ -5,6 +5,7 @@ set(TEST_SRC
         test/modules/clfr_file_writer_reader_test.cc
         test/modules/filter_test.cc
         test/modules/flow_table_test.cc
+        test/modules/pcap_file_reader_test.cc
         test/modules/pcap_reader_test.cc
         test/modules/raw_packet_parser_test.cc
         test/types/clfr_test.cc
@@ -36,6 +37,8 @@ add_test(NAME Filter WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND test_runner
 add_test(NAME FlowTable WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND test_runner FlowTable)
 add_test(NAME Key WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND test_runner Key)
 add_test(NAME Packet WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND test_runner Packet)
+add_test(NAME PCAPFileReader WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        COMMAND test_runner PCAPFileReader)
 add_test(NAME PCAPReader WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND test_runner PCAPReader)
 add_test(NAME RawPacket WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND test_runner RawPacket)
 add_test(NAME RawPacketParser WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}

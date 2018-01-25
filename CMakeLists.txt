@@ -27,6 +27,7 @@ set(MODULES_SRC
         ${MODULES_DIR}/filter.h ${MODULES_DIR}/filter.cc
         ${MODULES_DIR}/flow_table.h ${MODULES_DIR}/flow_table.cc
         ${MODULES_DIR}/live_capture.h ${MODULES_DIR}/live_capture.cc
+        ${MODULES_DIR}/pcap_file_reader.h ${MODULES_DIR}/pcap_file_reader.cc
         ${MODULES_DIR}/pcap_reader.h ${MODULES_DIR}/pcap_reader.cc
         ${MODULES_DIR}/raw_packet_parser.h ${MODULES_DIR}/raw_packet_parser.cc
         ${MODULES_DIR}/tzsp_receiver.h ${MODULES_DIR}/tzsp_receiver.cc
