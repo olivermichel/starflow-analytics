@@ -62,8 +62,16 @@ TEST_CASE("Features", "[types::Features]")
 		types::Features feat2;
 		types::Features feat3;
 
+		feat1.ip_ttl    = 12;
+		feat1.tcp_seq   = 23482;
 		feat1.tcp_flags = f1;
+
+		feat2.ip_ttl    = 30;
+		feat2.tcp_seq   = 28888;
 		feat2.tcp_flags = f2;
+
+		feat3.ip_ttl    = 12;
+		feat3.tcp_seq   = 23482;
 		feat3.tcp_flags = f1;
 
 		CHECK(feat1 == feat3);
@@ -74,6 +82,8 @@ TEST_CASE("Features", "[types::Features]")
 	{
 		types::Features features;
 		features.tcp_flags = f1;
+		features.ip_ttl = 12;
+		features.tcp_seq = 23929228;
 		proto::features proto_features = features.to_proto();
 		types::Features features_restore(proto_features);
 		CHECK(features_restore == features);

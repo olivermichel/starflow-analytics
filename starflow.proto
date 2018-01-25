@@ -30,7 +30,9 @@ message tcp_flags {
 }
 
 message features {
-    tcp_flags tcp_flags = 1;
+    int32 ip_ttl        = 1;
+    int32 tcp_seq       = 2;
+    tcp_flags tcp_flags = 3;
 }
 
 message clfr {
