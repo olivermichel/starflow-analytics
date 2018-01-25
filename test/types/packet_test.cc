@@ -6,19 +6,29 @@ using namespace starflow;
 
 TEST_CASE("Packet","[types::Packet]")
 {
-	types::Packet p1(123, 23);
-	types::Packet p2(495, 3439);
-	types::Packet p3(123, 23);
+	types::Packet p1(123, 124, 23);
+	types::Packet p2(495, 496, 3439);
+	types::Packet p3(123, 124, 23);
 
+	p1.qid = 1;
+	p1.qlen = 21;
 	p1.features = types::Features { };
+
+	p2.qid = 2;
+	p2.qlen = 22;
 	p2.features = types::Features { };
+
+	p3.qid = 1;
+	p3.qlen = 21;
 	p3.features = types::Features { };
 
-	SECTION("Packet(ts_in, len)")
+	SECTION("Packet(ts_in, ts_out, len)")
 	{
 		CHECK(p1.ts_in.count() == 123);
+		CHECK(p1.ts_out.count() == 124);
 		CHECK(p1.len == 23);
 		CHECK(p2.ts_in.count() == 495);
+		CHECK(p2.ts_out.count() == 496);
 		CHECK(p2.len == 3439);
 	}
 

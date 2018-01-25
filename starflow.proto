@@ -13,8 +13,11 @@ message HelloReply { }
 
 message packet {
     int64 ts_in       = 1;
-    int32 len         = 2;
-    features features = 3;
+    int64 ts_out      = 2;
+    int32 len         = 3;
+    int32 qid         = 4;
+    int32 qlen        = 5;
+    features features = 6;
 }
 
 message key {

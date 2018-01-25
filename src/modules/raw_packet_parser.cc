@@ -66,10 +66,14 @@ bool starflow::modules::RawPacketParser::_parse_packet(const types::RawPacket& r
 	if (ip->ip_p == IPPROTO_UDP) {
 		udp = (struct udphdr*) (raw_packet.pl.get() + pkt_offset);
 		key = {ip->ip_p, ip->ip_src, ip->ip_dst, ntohs(udp->uh_sport), ntohs(udp->uh_dport)};
+
 	} else if (ip->ip_p == IPPROTO_TCP) {
 		tcp = (struct tcphdr*) (raw_packet.pl.get() + pkt_offset);
 		key = {ip->ip_p, ip->ip_src, ip->ip_dst, ntohs(tcp->th_sport), ntohs(tcp->th_dport)};
+
+		packet.features.tcp_seq = ntohl(tcp->th_seq);
 		packet.features.tcp_flags = types::Features::tcp_flags_t(tcp->th_flags);
+
 	} else return false;
 
 	if (_capture_length == capture_length::trunc)

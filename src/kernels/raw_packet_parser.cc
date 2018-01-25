@@ -26,7 +26,7 @@ raft::kstatus starflow::kernels::RawPacketParser::run()
 
 	input["in"].pop(raw_packet);
 
-	types::Packet packet(raw_packet.ts, raw_packet.len);
+	types::Packet packet(raw_packet.ts, raw_packet.ts, raw_packet.len);
 
 	if (_parse_packet(key, raw_packet, packet))
 		output["out"].push(std::make_pair(key, packet));
@@ -74,6 +74,7 @@ bool starflow::kernels::RawPacketParser
 	} else if (ip->ip_p == IPPROTO_TCP) {
 		tcp = (struct tcphdr*) (raw_packet.pl.get() + pkt_offset);
 		key = {ip->ip_p, ip->ip_src, ip->ip_dst, ntohs(tcp->th_sport), ntohs(tcp->th_dport)};
+		packet.features.tcp_seq = ntohl(tcp->th_seq);
 		packet.features.tcp_flags = types::Features::tcp_flags_t(tcp->th_flags);
 	} else return false;
 
