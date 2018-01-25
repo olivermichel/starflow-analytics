@@ -15,7 +15,7 @@ void starflow::modules::FlowTable::add_packet(types::Key key, types::Packet pack
 	if (_mode == mode::callback && !_callback)
 		throw std::logic_error("FlowTable: no callback function set");
 
-	auto ts = packet.ts;
+	auto ts = packet.ts_in;
 
 	auto flow_table_iter = _lookup_and_insert(std::move(key), std::move(packet));
 	_check_evict(flow_table_iter, ts);
@@ -79,14 +79,14 @@ void starflow::modules::FlowTable::_force_export_udp(bool complete)
 {
 	for (auto i = std::begin(_active_flows); i != std::end(_active_flows);)
 		i = i->first.ip_proto == (uint8_t) _ip_proto::udp ?
-			_evict_flow(i, i->second.last_packet().ts, complete) : std::next(i, 1);
+			_evict_flow(i, i->second.last_packet().ts_in, complete) : std::next(i, 1);
 }
 
 void starflow::modules::FlowTable::_force_export_tcp(bool complete)
 {
 	for (auto i = std::begin(_active_flows); i != std::end(_active_flows);)
 		i = i->first.ip_proto == (uint8_t) _ip_proto::tcp ?
-			_evict_flow(i, i->second.last_packet().ts, complete) : std::next(i, 1);
+			_evict_flow(i, i->second.last_packet().ts_in, complete) : std::next(i, 1);
 }
 
 void starflow::modules::FlowTable::_force_check_last_ack()
@@ -120,7 +120,7 @@ void starflow::modules::FlowTable::
 		_evict_flow(it, ts, true);
 	} /* else if (_incomplete_evict_policy == incomplete_evict_policy::pkt_count
 			   && i->second.n_packets() >= _incomplete_evict_pkt_count) {
-		_evict_flow(i, packet.ts, false);
+		_evict_flow(i, packet.ts_in, false);
 	} */
 }
 
@@ -130,7 +130,7 @@ void starflow::modules::FlowTable::_check_timeouts(std::chrono::microseconds tri
 
 		// in-place removal requires setting iterator manually
 		long long int since_last_packet
-			= (trigger_ts.count() - i->second.last_packet().ts.count());
+			= (trigger_ts.count() - i->second.last_packet().ts_in.count());
 
 		if (i->first.ip_proto == (uint8_t) _ip_proto::udp && since_last_packet >= _udp_to.count()) {
 			i = _evict_flow(i, trigger_ts, true);

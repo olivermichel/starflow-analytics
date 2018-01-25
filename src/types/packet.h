@@ -12,13 +12,10 @@ namespace starflow {
 		class Packet
 		{
 		public:
-			//TODO:	proto::packet to_proto() const;
-			//TODO:	static Packet from_proto(const proto::packet);
-
 			Packet()                         = default;
-			Packet(std::chrono::microseconds ts, unsigned int len);
+			Packet(std::chrono::microseconds ts_in, unsigned int len);
 			Packet(const proto::packet& p);
-			Packet(unsigned long ts, unsigned int len);
+			Packet(unsigned long ts_in, unsigned int len);
 			Packet(const Packet&)            = default;
 			Packet& operator=(const Packet&) = default;
 			Packet(Packet&&)                 = default;
@@ -27,7 +24,7 @@ namespace starflow {
 			bool operator==(const Packet& other) const;
 			bool operator!=(const Packet& other) const;
 
-			std::chrono::microseconds ts;
+			std::chrono::microseconds ts_in;
 			unsigned                  len;
 
 			Features features;

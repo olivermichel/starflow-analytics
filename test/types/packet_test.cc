@@ -14,11 +14,11 @@ TEST_CASE("Packet","[types::Packet]")
 	p2.features = types::Features { };
 	p3.features = types::Features { };
 
-	SECTION("Packet(ts, len)")
+	SECTION("Packet(ts_in, len)")
 	{
-		CHECK(p1.ts.count() == 123);
+		CHECK(p1.ts_in.count() == 123);
 		CHECK(p1.len == 23);
-		CHECK(p2.ts.count() == 495);
+		CHECK(p2.ts_in.count() == 495);
 		CHECK(p2.len == 3439);
 	}
 
