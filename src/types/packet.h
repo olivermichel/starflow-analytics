@@ -6,12 +6,16 @@
 #include <string>
 
 #include "features.h"
+#include "key.h"
 
 namespace starflow {
 	namespace types {
 		class Packet
 		{
 		public:
+
+			static bool parse(const unsigned char* buf, Key& key, Packet& pkt, bool outer_eth = true);
+
 			Packet()                         = default;
 			Packet(std::chrono::microseconds ts_in, std::chrono::microseconds ts_out,
 				   unsigned int len);

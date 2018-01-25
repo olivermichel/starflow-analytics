@@ -28,7 +28,6 @@ set(MODULES_SRC
         ${MODULES_DIR}/flow_table.h ${MODULES_DIR}/flow_table.cc
         ${MODULES_DIR}/live_capture.h ${MODULES_DIR}/live_capture.cc
         ${MODULES_DIR}/pcap_file_reader.h ${MODULES_DIR}/pcap_file_reader.cc
-        ${MODULES_DIR}/pcap_reader.h ${MODULES_DIR}/pcap_reader.cc
         ${MODULES_DIR}/raw_packet_parser.h ${MODULES_DIR}/raw_packet_parser.cc
         ${MODULES_DIR}/tzsp_receiver.h ${MODULES_DIR}/tzsp_receiver.cc
         ${MODULES_DIR}/ui_adapter.h ${MODULES_DIR}/ui_adapter.cc
@@ -84,6 +83,7 @@ include(cmake/exe/test_runner.cmake)
 include(cmake/exe/packet_capture.cmake)
 include(cmake/exe/pcap_flow_file_exporter.cmake)
 include(cmake/exe/test_ui_client.cmake)
+
 
 #include(cmake/exe/clfr_converter.cmake)
 #include(cmake/exe/clfr_driver.cmake)

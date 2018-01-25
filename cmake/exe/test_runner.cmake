@@ -6,7 +6,6 @@ set(TEST_SRC
         test/modules/filter_test.cc
         test/modules/flow_table_test.cc
         test/modules/pcap_file_reader_test.cc
-        test/modules/pcap_reader_test.cc
         test/modules/raw_packet_parser_test.cc
         test/types/clfr_test.cc
         test/types/features_test.cc
