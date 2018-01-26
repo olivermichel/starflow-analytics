@@ -49,6 +49,7 @@ set(KERNELS_SRC
         ${KERNELS_DIR}/clfr_printer.h ${KERNELS_DIR}/clfr_printer.cc
         ${KERNELS_DIR}/flow_table.h ${KERNELS_DIR}/flow_table.cc
         ${KERNELS_DIR}/filter.h ${KERNELS_DIR}/filter.cc
+        ${KERNELS_DIR}/group_by.h ${KERNELS_DIR}/group_by.cc
         ${KERNELS_DIR}/live_capture.h ${KERNELS_DIR}/live_capture.cc
         ${KERNELS_DIR}/map.h ${KERNELS_DIR}/map.cc
         ${KERNELS_DIR}/packet_printer.h ${KERNELS_DIR}/packet_printer.cc
