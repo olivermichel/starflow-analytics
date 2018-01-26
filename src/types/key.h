@@ -10,6 +10,11 @@
 
 namespace starflow {
 	namespace types {
+
+		using ip_proto_t = std::uint8_t;
+		using ip_addr_t  = std::uint32_t;
+		using tp_port_t  = std::uint16_t;
+
 		class Key
 		{
 		public:
