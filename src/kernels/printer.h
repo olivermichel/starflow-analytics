@@ -10,25 +10,6 @@
 
 
 namespace starflow {
-/*
-	std::ostream& operator<<(std::ostream& os, proto::packet& p)
-	{
-		os << "starflow::proto::packet(len=" << p.len() << ", ts=" << p.ts() << ")";
-		return os;
-	}
-
-	std::ostream& operator<<(std::ostream& os, proto::raw_packet& p)
-	{
-		os << "starflow::proto::raw_packet(len=" << p.len() << ", ts=" << p.ts() << ")";
-		return os;
-	}
-
-	std::ostream& operator<<(std::ostream& os, types::RawPacket& p)
-	{
-		os << "starflow::RawPacket(len=" << p.len << ", ts=" << p.ts.count() << ")";
-		return os;
-	}
-*/
 
 	namespace kernels {
 
