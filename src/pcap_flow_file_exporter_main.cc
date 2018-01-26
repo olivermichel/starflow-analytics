@@ -81,18 +81,15 @@ int main(int argc, char** argv)
 	const auto options = _parse_cli_options(argc, argv);
 
 	auto hdr_type = options.encapsulation == "ip" ?
-					sf::kernels::RawPacketParser::outer_header_type::ip
-					: sf::kernels::RawPacketParser::outer_header_type::eth;
+					sf::kernels::PCAPFileReader::outer_header_type::ip
+					: sf::kernels::PCAPFileReader::outer_header_type::eth;
 
-	auto cap_len  = starflow::kernels::RawPacketParser::capture_length::trunc;
-
-	sf::kernels::PCAPFileReader pcap_file_reader(options.input);
-	sf::kernels::RawPacketParser raw_packet_parser(hdr_type, cap_len);
+	sf::kernels::PCAPFileReader pcap_file_reader(options.input, hdr_type);
 	sf::kernels::FlowTable flow_table {};
 	sf::kernels::CLFRFileExporter clfr_file_exporter(options.output, options.verbose);
 
 	raft::map m;
-	m += pcap_file_reader >> raw_packet_parser >> flow_table >> clfr_file_exporter;
+	m += pcap_file_reader >> flow_table >> clfr_file_exporter;
 	m.exe();
 
 	return 0;

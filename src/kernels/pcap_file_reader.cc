@@ -3,23 +3,22 @@
 
 #include "../types/raw_packet.h"
 
-starflow::kernels::PCAPFileReader::PCAPFileReader(const std::string& file_name)
-	: _pcap_reader()
+starflow::kernels::PCAPFileReader::PCAPFileReader(const std::string& file_name,
+												  outer_header_type outer_hdr)
+	: _pcap_reader(file_name, outer_hdr == outer_header_type::eth)
 {
-	_pcap_reader.set_file_name(file_name);
-	_pcap_reader.set_callback([this](types::RawPacket p) {
-		this->_read_packet(std::move(p));
-	});
-	output.add_port<starflow::types::RawPacket>("out");
+	output.add_port<std::pair<starflow::types::Key, starflow::types::Packet>>("out");
 }
 
 raft::kstatus starflow::kernels::PCAPFileReader::run()
 {
-	_pcap_reader();
-	return(raft::stop);
-}
+	starflow::types::Key k;
+	starflow::types::Packet p;
 
-void starflow::kernels::PCAPFileReader::_read_packet(starflow::types::RawPacket p)
-{
-	output["out"].push(p);
+	if (!_pcap_reader.end()) {
+		_pcap_reader.next(k, p);
+		auto pair = std::make_pair(k, p);
+		output["out"].push(pair);
+		return raft::proceed;
+	} else return raft::stop;
 }

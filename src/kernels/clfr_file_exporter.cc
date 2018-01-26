@@ -30,6 +30,8 @@ raft::kstatus starflow::kernels::CLFRFileExporter::run()
 				  << std::fixed << std::setprecision(2)
 				  << (double) _clfr_file_writer.total_bytes() / 1048576 << " MB, " << std::setw(4)
 				  << dur.count() << " ms" << std::endl;
+
+		_start2 = now;
 	}
 
 	return raft::proceed;

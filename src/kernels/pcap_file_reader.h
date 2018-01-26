@@ -5,20 +5,20 @@
 #include <raft>
 #include <pcap.h>
 
-#include "../modules/pcap_reader.h"
-#include "../types/raw_packet.h"
+#include "../modules/pcap_file_reader.h"
 
 namespace starflow {
 	namespace kernels {
 		class PCAPFileReader : public raft::kernel
 		{
 		public:
-			explicit PCAPFileReader(const std::string& file_name);
+			enum class outer_header_type { eth, ip };
+			explicit PCAPFileReader(const std::string& file_name,
+									outer_header_type outer_eth = outer_header_type::eth);
 			raft::kstatus run() override;
 
 		private:
-			void _read_packet(starflow::types::RawPacket p);
-			modules::PCAPReader _pcap_reader;
+			modules::PCAPFileReader _pcap_reader;
 		};
 	}
 }
