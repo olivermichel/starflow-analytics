@@ -1,11 +1,11 @@
 
 #include <iomanip>
 
-#include "clfr_file_exporter.h"
+#include "clfr_file_writer.h"
 #include "../types/clfr.h"
 
 
-starflow::kernels::CLFRFileExporter::CLFRFileExporter(const std::string& file_name, bool verbose)
+starflow::kernels::CLFRFileWriter::CLFRFileWriter(const std::string& file_name, bool verbose)
 	: _clfr_file_writer(file_name),
 	  _verbose(verbose),
 	  _start1(std::chrono::steady_clock::now()),
@@ -14,7 +14,7 @@ starflow::kernels::CLFRFileExporter::CLFRFileExporter(const std::string& file_na
 	input.add_port<types::CLFR>("clfr_in");
 }
 
-raft::kstatus starflow::kernels::CLFRFileExporter::run()
+raft::kstatus starflow::kernels::CLFRFileWriter::run()
 {
 	types::CLFR clfr;
 	input["clfr_in"].pop(clfr);
@@ -37,7 +37,7 @@ raft::kstatus starflow::kernels::CLFRFileExporter::run()
 	return raft::proceed;
 }
 
-starflow::kernels::CLFRFileExporter::~CLFRFileExporter()
+starflow::kernels::CLFRFileWriter::~CLFRFileWriter()
 {
 	_clfr_file_writer.close();
 

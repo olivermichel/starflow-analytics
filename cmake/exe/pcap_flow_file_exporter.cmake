@@ -1,7 +1,7 @@
 
 add_executable(pcap_flow_file_exporter
         src/etc/format_helpers.cc
-        src/kernels/clfr_file_exporter.cc
+        src/kernels/clfr_file_writer.cc
         src/kernels/clfr_printer.cc
         src/kernels/flow_table.cc
         src/kernels/pcap_file_reader.cc

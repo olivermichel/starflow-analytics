@@ -11,12 +11,12 @@
 
 namespace starflow {
 	namespace kernels {
-		class CLFRFileExporter : public raft::kernel
+		class CLFRFileWriter : public raft::kernel
 		{
 		public:
-			explicit CLFRFileExporter(const std::string& file_name, bool verbose = false);
+			explicit CLFRFileWriter(const std::string& file_name, bool verbose = false);
 			raft::kstatus run() override;
-			~CLFRFileExporter() override;
+			~CLFRFileWriter() override;
 		private:
 			modules::CLFRFileWriter _clfr_file_writer;
 			bool _verbose;

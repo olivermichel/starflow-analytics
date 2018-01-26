@@ -31,7 +31,8 @@ make test
 
 |Kernel Name         |Input                                 |Output                                |
 |--------------------|--------------------------------------|--------------------------------------|
-|CLFRFileExporter    |CLFR                                  |*none*                                |
+|CLFRFileReader      |*none*                                |CLFR                                  |
+|CLFRFileWriter      |CLFR                                  |*none*                                |
 |CLFRPrinter         |CLFR                                  |CLFR *or none*                        |
 |FlowTable           |Key, Packet                           |CLFR                                  |
 |LiveCapture         |*none*                                |RawPacket                             |

@@ -7,7 +7,7 @@
 #include "kernels/flow_table.h"
 #include "kernels/raw_packet_parser.h"
 #include "kernels/pcap_file_reader.h"
-#include "kernels/clfr_file_exporter.h"
+#include "kernels/clfr_file_writer.h"
 
 #include <cxxopts/cxxopts.h>
 
@@ -86,7 +86,7 @@ int main(int argc, char** argv)
 
 	sf::kernels::PCAPFileReader pcap_file_reader(options.input, hdr_type);
 	sf::kernels::FlowTable flow_table {};
-	sf::kernels::CLFRFileExporter clfr_file_exporter(options.output, options.verbose);
+	sf::kernels::CLFRFileWriter clfr_file_exporter(options.output, options.verbose);
 
 	raft::map m;
 	m += pcap_file_reader >> flow_table >> clfr_file_exporter;
