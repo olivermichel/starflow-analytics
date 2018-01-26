@@ -1,5 +1,6 @@
 *.bin
 *.pcap
+*.clfr
 .DS_Store
 .idea/
 build/
@@ -9,4 +10,5 @@ src/proto/
 test/include/catch.h
 !test/data/*.pcap
 !test/data/*.bin
+!test/data/*.clfr
 ext/include/cxxopts/cxxopts.h
