@@ -37,7 +37,7 @@ make test
 |FlowTable           |Key, Packet                           |CLFR                                  |
 |LiveCapture         |*none*                                |RawPacket                             |
 |Map                 |*any*                                 |*any*                                 |
-|PacketFilter        |Key, Packet                           |Key, Packet                           |
+|Filter              |*T*                                   |*T*                                   |
 |PacketPrinter       |Key, Packet                           |Key, Packet *or none*                 |
 |PCAPFileReader      |*none*                                |RawPacket                             |
 |Printer             |*any*                                 |*any or none*                         |
