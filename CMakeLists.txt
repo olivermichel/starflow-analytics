@@ -84,10 +84,6 @@ add_custom_command(
         WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
 
 include(cmake/exe/test_runner.cmake)
-include(cmake/exe/packet_capture.cmake)
 include(cmake/exe/pcap_flow_file_exporter.cmake)
 include(cmake/exe/test_ui_client.cmake)
 include(cmake/exe/packet_counts.cmake)
-
-#include(cmake/exe/clfr_converter.cmake)
-#include(cmake/exe/clfr_driver.cmake)
