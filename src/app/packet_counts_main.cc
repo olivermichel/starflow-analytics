@@ -9,12 +9,17 @@
 
 int main(int argc, char** argv)
 {
+	if (argc != 2) {
+		std::cerr << "Usage: " << argv[0] << " <data.clfr>" << std::endl;
+		return 1;
+	}
+
 	namespace sf = starflow;
 	using pkts_per_ip_t = std::pair<sf::types::ip_addr_t, unsigned long>;
 
 	sf::modules::Counter<sf::types::ip_addr_t> pkt_counts;
 
-	sf::kernels::CLFRFileReader clfr_file_reader("caida15_2a-01.clfr");
+	sf::kernels::CLFRFileReader clfr_file_reader(argv[1]);
 
 	sf::kernels::GroupBy<pkts_per_ip_t> src_ip_counter([&pkt_counts](const sf::types::CLFR& clfr) {
 		return pkt_counts += std::make_pair(clfr.key().ip_src, clfr.n_packets());
