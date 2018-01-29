@@ -6,4 +6,4 @@ services:
 before_install:
   - docker build -t starflow_analytics .
 script:
-  - docker run starflow_analytics /bin/sh -c "/root/starflow_analytics/build/test_runner"
+  - docker run starflow_analytics /bin/sh -c "cd /root/starflow_analytics && ./build/test_runner"
