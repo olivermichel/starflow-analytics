@@ -59,8 +59,6 @@ bool starflow::modules::RawPacketParser::_parse_packet(const types::RawPacket& r
 
 	ip = (struct ip*) (raw_packet.pl.get() + pkt_offset);
 
-	packet.features.ip_ttl = ip->ip_ttl;
-
 	pkt_offset += sizeof(struct ip);
 
 	if (ip->ip_p == IPPROTO_UDP) {
