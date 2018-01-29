@@ -3,11 +3,11 @@
 #include <iomanip>
 #include <fstream>
 
-#include "proto/starflow.pb.h"
-#include "kernels/flow_table.h"
-#include "kernels/raw_packet_parser.h"
-#include "kernels/pcap_file_reader.h"
-#include "kernels/clfr_file_writer.h"
+#include "../proto/starflow.pb.h"
+#include "../kernels/flow_table.h"
+#include "../kernels/raw_packet_parser.h"
+#include "../kernels/pcap_file_reader.h"
+#include "../kernels/clfr_file_writer.h"
 
 #include <cxxopts/cxxopts.h>
 
@@ -20,7 +20,11 @@ struct options {
 
 void _print_help(cxxopts::Options& opts, int exit_code = 0)
 {
-	(exit_code == 0 ? std::cout : std::cerr) << opts.help({""}) << std::endl;
+	if (exit_code == 0)
+		std::cout << opts.help({""}) << std::endl;
+	else
+		std::cerr << opts.help({""}) << std::endl;
+
 	exit(exit_code);
 }
 
@@ -80,17 +84,37 @@ int main(int argc, char** argv)
 	namespace sf = starflow;
 	const auto options = _parse_cli_options(argc, argv);
 
-	auto hdr_type = options.encapsulation == "ip" ?
-					sf::kernels::PCAPFileReader::outer_header_type::ip
-					: sf::kernels::PCAPFileReader::outer_header_type::eth;
+	unsigned long long pkt_count = 0, clfr_count = 0;
+	auto eth = (options.encapsulation == "eth");
 
-	sf::kernels::PCAPFileReader pcap_file_reader(options.input, hdr_type);
-	sf::kernels::FlowTable flow_table {};
-	sf::kernels::CLFRFileWriter clfr_file_exporter(options.output, options.verbose);
+	starflow::modules::PCAPFileReader pcap_reader(options.input, eth);
+	starflow::modules::FlowTable flow_table;
+	starflow::modules::CLFRFileWriter clfr_file_writer(options.output, false);
+	flow_table.set_callback([&clfr_file_writer, &clfr_count](starflow::types::CLFR clfr) {
+		clfr_count++;
+		clfr_file_writer.write_clfr(clfr);
+	});
 
-	raft::map m;
-	m += pcap_file_reader >> flow_table >> clfr_file_exporter;
-	m.exe();
+	auto start = std::chrono::steady_clock::now();
 
+	while (!pcap_reader.end()) {
+		starflow::types::Key k;
+		starflow::types::Packet p;
+		pcap_reader.next(k, p);
+		flow_table.add_packet(k, p);
+		pkt_count++;
+
+		if (options.verbose && pkt_count % 100000 == 0)
+			std::cout << '.' << std::flush;
+	}
+
+	auto end = std::chrono::steady_clock::now();
+	auto dur = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+	if (options.verbose)
+		std::cout << std::endl << pkt_count << " pkts, " << clfr_count << " CLFRs in "
+				  << ((double) dur.count()) / 1000  << "s" << std::endl;
+
+	clfr_file_writer.close();
 	return 0;
 }

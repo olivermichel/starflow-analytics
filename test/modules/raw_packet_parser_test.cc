@@ -33,7 +33,6 @@ TEST_CASE("RawPacketParser", "[modules::RawPacketParser]")
 		CHECK(key1.th_dport == 80);
 
 		CHECK(packet1.len == 62);
-		CHECK(packet1.features.ip_ttl == 128);
 		CHECK(packet1.features.tcp_flags.is_syn());
 	}
 }

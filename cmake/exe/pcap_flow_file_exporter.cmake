@@ -10,7 +10,7 @@ add_executable(pcap_flow_file_exporter
         src/modules/flow_table.cc
         src/modules/pcap_file_reader.cc
         src/modules/raw_packet_parser.cc
-        src/pcap_flow_file_exporter_main.cc
+        src/app/pcap_flow_file_exporter_main.cc
         src/proto/starflow.pb.cc
         src/types/clfr.cc
         src/types/features.cc
