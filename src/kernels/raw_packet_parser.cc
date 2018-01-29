@@ -11,7 +11,7 @@
 #include "../types/raw_packet.h"
 
 #include "raw_packet_parser.h"
-
+/*
 starflow::kernels::RawPacketParser::RawPacketParser(outer_header_type t, capture_length l)
 	: _outer_header(t), _capture_length(l)
 {
@@ -83,3 +83,4 @@ bool starflow::kernels::RawPacketParser
 
 	return true;
 }
+ */

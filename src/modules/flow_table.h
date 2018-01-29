@@ -20,7 +20,6 @@ namespace starflow {
 
 		public:
 
-//			enum class incomplete_evict_policy { none, to, pkt_count };
 			enum class mode { callback, store };
 
 			FlowTable() = default;
@@ -60,24 +59,22 @@ namespace starflow {
 
 		private:
 
-			unsigned _id                                       = 0;
+			const std::uint32_t _E6                            = 1000000;
+
+			uint16_t _id                                       = 0;
 			flow_table_t _active_flows                         = {};
 			exported_flows_table_t _exported_flows             = {};
 
-			std::chrono::microseconds _to_check_interval         = std::chrono::seconds(5);
-			std::chrono::microseconds _ack_check_interval        = std::chrono::seconds(1);
-			std::chrono::microseconds _udp_to                    = std::chrono::seconds(10);
-			std::chrono::microseconds _tcp_to                    = std::chrono::seconds(30);
-			std::chrono::microseconds _last_to_check             = std::chrono::seconds(0);
-			std::chrono::microseconds _last_ack_check            = std::chrono::seconds(0);
-			unsigned long _incomplete_evict_pkt_count            = 50;
+			std::uint32_t _to_check_interval_s                 = 5;
+			std::uint32_t _ack_check_interval_s                = 1;
+			std::uint32_t _udp_to_s                            = 10;
+			std::uint32_t _tcp_to_s                            = 30;
+			std::uint32_t _last_to_check_s                     = 0;
+			std::uint32_t _last_ack_check_s                    = 0;
+			std::uint32_t _incomplete_evict_pkt_count          = 50;
 
 			FlowTable::mode _mode                              = mode::callback;
-/*
-			incomplete_evict_policy _incomplete_evict_policy = incomplete_evict_policy::none;
-			std::chrono::microseconds _incomplete_evict_to   = std::chrono::seconds(10);
 
-*/
 			unsigned long long _next_id                        = 1;
 
 			unsigned long long _n_packets_processed            = 0;
@@ -89,14 +86,14 @@ namespace starflow {
 
 			flow_table_t::iterator _lookup_and_insert(types::Key&& key, types::Packet&& packet);
 
-			void _check_evict(flow_table_t::iterator, std::chrono::microseconds ts);
+			void _check_evict(flow_table_t::iterator, std::uint32_t trigger_ts_s);
 
-			void _check_timeouts(std::chrono::microseconds trigger_ts);
+			void _check_timeouts(std::uint32_t trigger_ts_s);
 
-			void _check_last_ack(std::chrono::microseconds trigger_ts);
+			void _check_last_ack(std::uint32_t trigger_ts_s);
 
 			flow_table_t::iterator _evict_flow(const flow_table_t::iterator& i,
-											   std::chrono::microseconds evict_ts, bool complete);
+											   std::uint32_t evict_ts_s, bool complete);
 
 			flow_table_t::iterator _delete_flow(const flow_table_t::iterator& i);
 		};

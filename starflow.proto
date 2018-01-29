@@ -12,8 +12,8 @@ message HelloRequest { }
 message HelloReply { }
 
 message packet {
-    int64 ts_in       = 1;
-    int64 ts_out      = 2;
+    int64 ts_in_us    = 1;
+    int64 ts_out_us   = 2;
     int32 len         = 3;
     int32 qid         = 4;
     int32 qlen        = 5;

@@ -33,8 +33,8 @@ int main(int argc, char** argv)
 		}
 
 		last = current;
-		std::time_t first_evict_time = (first.evict_ts().count() /1000000);
-		std::time_t last_evict_time = (last.evict_ts().count() /1000000);
+		std::time_t first_evict_time = first.evict_ts_s();
+		std::time_t last_evict_time  = last.evict_ts_s();
 
 		std::cout << "File name:                 " << argv[1] << std::endl;
 		std::cout << "Number of CLFRs:           " << clfr_count << std::endl;

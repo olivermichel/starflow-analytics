@@ -12,7 +12,8 @@ void starflow::modules::PCAPFileReader::next(starflow::types::Key& key, starflow
 	_end = _peek();
 
 	starflow::types::Packet::parse(_pl_buf, key, pkt, _outer_eth);
-	pkt.ts_in = std::chrono::microseconds(_hdr->ts.tv_sec*1000000 + _hdr->ts.tv_usec);
+	pkt.ts_in_us  = ((unsigned) _hdr->ts.tv_sec*1000000 + (unsigned) _hdr->ts.tv_usec);
+	pkt.ts_out_us = ((unsigned) _hdr->ts.tv_sec*1000000 + (unsigned) _hdr->ts.tv_usec);
 }
 
 pcap* starflow::modules::PCAPFileReader::_open(const std::string& file_name)

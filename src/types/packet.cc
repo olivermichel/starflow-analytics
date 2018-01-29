@@ -40,36 +40,32 @@ bool starflow::types::Packet::parse(const unsigned char* buf, Key& key, Packet& 
 
 	pkt.len = ntohs(ip->ip_len)+(outer_eth ? sizeof(eth) : 0);
 
-	pkt.ts_out = std::chrono::microseconds(0);
+	pkt.ts_out_us = 0;
 	pkt.qid  = 0;
 	pkt.qlen = 0;
 
 	return true;
 }
 
-starflow::types::Packet::Packet(std::chrono::microseconds ts_in, std::chrono::microseconds ts_out,
-								unsigned int len)
-	: ts_in(ts_in), ts_out(ts_out), len(len) { }
-
-starflow::types::Packet::Packet(unsigned long ts_in, unsigned long ts_out, unsigned int len)
-	: ts_in(ts_in), ts_out(ts_out), len(len) { }
+starflow::types::Packet::Packet(std::uint64_t ts_in_us, std::uint64_t ts_out_us, std::uint16_t len)
+	: ts_in_us(ts_in_us), ts_out_us(ts_out_us), len(len) { }
 
 starflow::types::Packet::Packet(const starflow::proto::packet& p)
-	: ts_in(p.ts_in()),
-	  ts_out(p.ts_out()),
-	  len((unsigned) p.len()),
-	  qid((unsigned) p.qid()),
-	  qlen((unsigned) p.qlen()),
+	: ts_in_us(p.ts_in_us()),
+	  ts_out_us(p.ts_out_us()),
+	  len(static_cast<std::uint16_t>(p.len())),
+	  qid(static_cast<std::uint16_t>(p.qid())),
+	  qlen(static_cast<std::uint16_t>(p.qlen())),
 	  features(p.features()) { }
 
 bool starflow::types::Packet::operator==(const Packet& other) const
 {
-	return ts_in    == other.ts_in
-		&& ts_out   == other.ts_out
-		&& len      == other.len
-		&& qid      == other.qid
-		&& qlen     == other.qlen
-		&& features == other.features;
+	return ts_in_us  == other.ts_in_us
+		&& ts_out_us == other.ts_out_us
+		&& len       == other.len
+		&& qid       == other.qid
+		&& qlen      == other.qlen
+		&& features  == other.features;
 }
 
 bool starflow::types::Packet::operator!=(const Packet& other) const
@@ -80,8 +76,8 @@ bool starflow::types::Packet::operator!=(const Packet& other) const
 starflow::proto::packet starflow::types::Packet::to_proto() const
 {
 	starflow::proto::packet p;
-	p.set_ts_in(ts_in.count());
-	p.set_ts_out(ts_out.count());
+	p.set_ts_in_us(ts_in_us);
+	p.set_ts_out_us(ts_out_us);
 	p.set_len(len);
 	p.set_qid(qid);
 	p.set_qlen(qlen);
@@ -91,8 +87,8 @@ starflow::proto::packet starflow::types::Packet::to_proto() const
 
 std::string starflow::types::Packet::str_desc() const
 {
-	std::string desc = "starflow::types::Packet(ts_in=" + std::to_string(ts_in.count())
-					   + ", ts_out=" + std::to_string(ts_out.count())
+	std::string desc = "starflow::types::Packet(ts_in_us=" + std::to_string(ts_in_us)
+					   + ", ts_out_us=" + std::to_string(ts_out_us)
 					   + ", len=" + std::to_string(len) + ")";
 	return desc;
 }

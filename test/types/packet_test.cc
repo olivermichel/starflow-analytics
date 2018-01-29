@@ -24,11 +24,11 @@ TEST_CASE("Packet","[types::Packet]")
 
 	SECTION("Packet(ts_in, ts_out, len)")
 	{
-		CHECK(p1.ts_in.count() == 123);
-		CHECK(p1.ts_out.count() == 124);
+		CHECK(p1.ts_in_us == 123);
+		CHECK(p1.ts_out_us == 124);
 		CHECK(p1.len == 23);
-		CHECK(p2.ts_in.count() == 495);
-		CHECK(p2.ts_out.count() == 496);
+		CHECK(p2.ts_in_us == 495);
+		CHECK(p2.ts_out_us == 496);
 		CHECK(p2.len == 3439);
 	}
 

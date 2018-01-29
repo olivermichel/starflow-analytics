@@ -17,10 +17,8 @@ namespace starflow {
 			static bool parse(const unsigned char* buf, Key& key, Packet& pkt, bool outer_eth = true);
 
 			Packet()                         = default;
-			Packet(std::chrono::microseconds ts_in, std::chrono::microseconds ts_out,
-				   unsigned int len);
 			Packet(const proto::packet& p);
-			Packet(unsigned long ts_in, unsigned long ts_out, unsigned int len);
+			Packet(std::uint64_t ts_in_us, std::uint64_t ts_out_us, std::uint16_t len);
 			Packet(const Packet&)            = default;
 			Packet& operator=(const Packet&) = default;
 			Packet(Packet&&)                 = default;
@@ -29,11 +27,12 @@ namespace starflow {
 			bool operator==(const Packet& other) const;
 			bool operator!=(const Packet& other) const;
 
-			std::chrono::microseconds ts_in;
-			std::chrono::microseconds ts_out;
-			unsigned                  len;
-			unsigned                  qid  = 0;
-			unsigned                  qlen = 0;
+			std::uint64_t ts_in_us;
+			std::uint64_t ts_out_us;
+
+			std::uint16_t len;
+			std::uint16_t qid;
+			std::uint16_t qlen;
 
 			Features features;
 

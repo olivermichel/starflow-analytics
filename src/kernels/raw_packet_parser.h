@@ -10,6 +10,8 @@
 
 namespace starflow {
 	namespace kernels {
+		/*
+		 * TODO: remove raw packet parsing
 		class RawPacketParser : public raft::kernel
 		{
 		public:
@@ -29,6 +31,7 @@ namespace starflow {
 			capture_length _capture_length;
 			bool _parse_packet(types::Key& key, types::RawPacket& raw_packet, types::Packet& packet);
 		};
+		*/
 	}
 }
 
