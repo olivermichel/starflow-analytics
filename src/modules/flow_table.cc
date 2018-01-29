@@ -166,7 +166,7 @@ starflow::modules::FlowTable::flow_table_t::iterator
 											  std::chrono::microseconds evict_ts, bool complete)
 {
 	i->second._complete = complete;
-	i->second._evict_ts = evict_ts;
+	i->second._evict_ts_s = static_cast<uint32_t>((evict_ts.count() / 1000000));
 
 	if (_mode == mode::callback)
 		_callback(i->second);

@@ -3,6 +3,7 @@
 #define STARFLOW_ANALYTICS_CLFR_H
 
 #include <list>
+#include <cstdint>
 
 #include "packet.h"
 #include "key.h"
@@ -22,7 +23,7 @@ namespace starflow {
 
 		public:
 			CLFR();
-			CLFR(const Key& k, unsigned long long flow_id, unsigned table_id);
+			CLFR(const Key& k, uint64_t flow_id, uint16_t table_id = 0);
 			CLFR(const CLFR&)            = default;
 			CLFR& operator=(const CLFR&) = default;
 			CLFR(CLFR&&)                 = default;
@@ -34,8 +35,9 @@ namespace starflow {
 
 			const Key& key() const;
 
-			unsigned long long id() const;
-			unsigned table_id() const;
+			std::uint64_t id() const;
+			std::uint16_t table_id() const;
+			std::uint32_t evict_ts_s() const;
 
 			void add_packet(Packet p);
 			const Packet& last_packet() const;
@@ -45,8 +47,6 @@ namespace starflow {
 			std::string str_desc() const;
 
 			bool complete() const;
-
-			std::chrono::microseconds evict_ts() const;
 
 			unsigned long n_packets() const;
 			unsigned long n_bytes() const;
@@ -59,9 +59,11 @@ namespace starflow {
 		private:
 			Key _key;
 			bool _complete = false;
-			unsigned long long _id;
-			unsigned _table_id;
-			std::chrono::microseconds _evict_ts = std::chrono::microseconds(0);
+
+			std::uint64_t _id;
+			std::uint16_t _table_id = 0;
+			std::uint32_t _evict_ts_s;
+
 			std::list<types::Packet> _packets = {};
 		};
 	}

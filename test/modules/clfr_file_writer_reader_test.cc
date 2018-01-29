@@ -30,7 +30,7 @@ TEST_CASE("CLFRFileWriter/CLFRFileReader", "[modules::CLFRFileWriter][modules::C
 		CHECK(writer.total_clfrs() == 1);
 
 		writer.write_clfr(clfr2);
-		CHECK(writer.total_bytes() == 97);
+		CHECK(writer.total_bytes() == 101);
 		CHECK(writer.total_clfrs() == 2);
 
 		writer.close();

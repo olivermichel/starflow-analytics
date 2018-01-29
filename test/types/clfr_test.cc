@@ -37,13 +37,13 @@ TEST_CASE("CLFR", "[types::CLFR]")
 		proto::clfr proto_clfr = clfr1.to_proto();
 		types::CLFR clfr2(proto_clfr);
 
-		CHECK(clfr1.key()      == clfr2.key());
-		CHECK(clfr1.id()       == clfr2.id());
-		CHECK(clfr1.table_id() == clfr2.table_id());
-		CHECK(clfr1.complete() == clfr2.complete());
-		CHECK(clfr1.evict_ts() == clfr2.evict_ts());
-		CHECK(clfr1.packets().size() == clfr2.packets().size());
+		CHECK(clfr1.key()             == clfr2.key());
+		CHECK(clfr1.id()              == clfr2.id());
+		CHECK(clfr1.table_id()        == clfr2.table_id());
+		CHECK(clfr1.complete()        == clfr2.complete());
+		CHECK(clfr1.evict_ts_s()      == clfr2.evict_ts_s());
+		CHECK(clfr1.packets().size()  == clfr2.packets().size());
 		CHECK(clfr1.packets().front() == clfr2.packets().front());
-		CHECK(clfr1 == clfr2);
+		CHECK(clfr1                   == clfr2);
 	}
 }
