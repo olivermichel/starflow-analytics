@@ -21,9 +21,11 @@ void starflow::modules::FlowTable::add_packet(types::Key key, types::Packet pack
 	_check_evict(flow_table_iter, ts);
 
 	if ((ts.count() - _last_to_check.count()) > _to_check_interval.count()) {
-		// these two operations can be combined (reduce runtime from 2N to N):
 		_check_timeouts(ts);
-		_check_last_ack();
+	}
+
+	if ((ts.count() - _last_ack_check.count()) > _ack_check_interval.count()) {
+		_check_last_ack(ts);
 	}
 }
 
@@ -91,7 +93,7 @@ void starflow::modules::FlowTable::_force_export_tcp(bool complete)
 
 void starflow::modules::FlowTable::_force_check_last_ack()
 {
-	_check_last_ack();
+	_check_last_ack(std::chrono::seconds(0));
 }
 
 starflow::modules::FlowTable::flow_table_t::iterator
@@ -133,11 +135,12 @@ void starflow::modules::FlowTable::_check_timeouts(std::chrono::microseconds tri
 			= (trigger_ts.count() - i->second.last_packet().ts_in.count());
 
 		if (i->first.ip_proto == (uint8_t) _ip_proto::udp && since_last_packet >= _udp_to.count()) {
-			i = _evict_flow(i, trigger_ts, true);
-		} /* else if (_incomplete_evict_policy == incomplete_evict_policy::to
-				   && since_last_packet >= _incomplete_evict_to.count()) {
+				i = _evict_flow(i, trigger_ts, true);
+		} else if (i->first.ip_proto == (uint8_t) _ip_proto::tcp
+				   && (since_last_packet >= _tcp_to.count()
+					   || i->second.n_packets() >= _incomplete_evict_pkt_count)) {
 			i = _evict_flow(i, trigger_ts, false);
-		} */ else {
+		} else {
 			i = std::next(i, 1);
 		}
 	}
@@ -145,7 +148,7 @@ void starflow::modules::FlowTable::_check_timeouts(std::chrono::microseconds tri
 	_last_to_check = trigger_ts;
 }
 
-void starflow::modules::FlowTable::_check_last_ack()
+void starflow::modules::FlowTable::_check_last_ack(std::chrono::microseconds trigger_ts)
 {
 	auto is_last_ack = [](types::CLFR& flow) -> bool {
 		return flow.key().ip_proto == (uint8_t) _ip_proto::tcp && flow.n_packets() == 1
@@ -154,6 +157,8 @@ void starflow::modules::FlowTable::_check_last_ack()
 
 	for (auto i = std::begin(_active_flows); i != std::end(_active_flows);)
 		i = is_last_ack(i->second) ? _delete_flow(i) : std::next(i, 1);
+
+	_last_ack_check = trigger_ts;
 }
 
 starflow::modules::FlowTable::flow_table_t::iterator

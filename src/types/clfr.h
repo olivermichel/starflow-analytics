@@ -18,7 +18,6 @@ namespace starflow {
 	namespace types {
 		class CLFR
 		{
-			friend class starflow::kernels::CLFRTable;
 			friend class starflow::modules::FlowTable;
 
 		public:

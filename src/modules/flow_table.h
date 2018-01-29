@@ -64,16 +64,19 @@ namespace starflow {
 			flow_table_t _active_flows                         = {};
 			exported_flows_table_t _exported_flows             = {};
 
-			std::chrono::microseconds _to_check_interval       = std::chrono::seconds(10);
-
-			std::chrono::microseconds _udp_to                  = std::chrono::seconds(30);
-			std::chrono::microseconds _last_to_check           = std::chrono::seconds(0);
+			std::chrono::microseconds _to_check_interval         = std::chrono::seconds(5);
+			std::chrono::microseconds _ack_check_interval        = std::chrono::seconds(1);
+			std::chrono::microseconds _udp_to                    = std::chrono::seconds(10);
+			std::chrono::microseconds _tcp_to                    = std::chrono::seconds(30);
+			std::chrono::microseconds _last_to_check             = std::chrono::seconds(0);
+			std::chrono::microseconds _last_ack_check            = std::chrono::seconds(0);
+			unsigned long _incomplete_evict_pkt_count            = 50;
 
 			FlowTable::mode _mode                              = mode::callback;
 /*
 			incomplete_evict_policy _incomplete_evict_policy = incomplete_evict_policy::none;
 			std::chrono::microseconds _incomplete_evict_to   = std::chrono::seconds(10);
-			unsigned long _incomplete_evict_pkt_count        = 50;
+
 */
 			unsigned long long _next_id                        = 1;
 
@@ -90,7 +93,7 @@ namespace starflow {
 
 			void _check_timeouts(std::chrono::microseconds trigger_ts);
 
-			void _check_last_ack();
+			void _check_last_ack(std::chrono::microseconds trigger_ts);
 
 			flow_table_t::iterator _evict_flow(const flow_table_t::iterator& i,
 											   std::chrono::microseconds evict_ts, bool complete);
