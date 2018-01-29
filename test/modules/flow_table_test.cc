@@ -11,6 +11,19 @@ using namespace starflow;
 
 TEST_CASE("FlowTable", "[modules::FlowTable]")
 {
+	/*  145.254.160.237:3372..................65.208.228.223:80  *
+	 *                                                           *
+	 *  --------------------(A1 - SYN    )-------------------->  *
+	 *  <-------------------(B1 - SYN/ACK)---------------------  *
+	 *  --------------------(A2 - ACK    )-------------------->  *
+	 *  <-------------------(B2 - ACK    )---------------------  *
+	 *  --------------------(A3 - ACK    )-------------------->  *
+	 *  <-------------------(B3 - ACK    )---------------------  *
+	 *  --------------------(A4 - FIN/ACK)-------------------->  *
+	 *  <-------------------(B4 - FIN/ACK)---------------------  *
+	 *  --------------------(A5 - ACK    )-------------------->  *
+	 */
+
 	unsigned char pkt_data_a1[] = {
 		// 62B, EthII, IP4, TCP [SYN], 145.254.160.237 -> 65.208.228.223, 3372 -> 80
 		0xfe, 0xff, 0x20, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x45,
@@ -42,6 +55,14 @@ TEST_CASE("FlowTable", "[modules::FlowTable]")
 		0x00, 0x00, 0x28, 0x0f, 0x62, 0x40, 0x00, 0x80, 0x06, 0x91, 0xd2, 0x91, 0xfe, 0xa0, 0xed,
 		0x41, 0xd0, 0xe4, 0xdf, 0x0d, 0x2c, 0x00, 0x50, 0x38, 0xaf, 0xff, 0xf3, 0x11, 0x4c, 0xa9,
 		0x49, 0x50, 0x11, 0x24, 0x14, 0x31, 0x6f, 0x00, 0x00
+	};
+
+	unsigned char pkt_data_a5[] = {
+		// 54B, EthII, IP4, TCP [ACK], 145.254.160.237 -> 65.208.228.223, 3372 -> 80
+		0xfe, 0xff, 0x20, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x45,
+		0x00, 0x00, 0x28, 0x0f, 0x56, 0x40, 0x00, 0x80, 0x06, 0x91, 0xde, 0x91, 0xfe, 0xa0, 0xed,
+		0x41, 0xd0, 0xe4, 0xdf, 0x0d, 0x2c, 0x00, 0x50, 0x38, 0xaf, 0xff, 0xf3, 0x11, 0x4c, 0x97,
+		0x74, 0x50, 0x10, 0x25, 0xbc, 0x41, 0x9d, 0x00, 0x00
 	};
 
 	unsigned char pkt_data_b1[] = {
@@ -174,6 +195,7 @@ TEST_CASE("FlowTable", "[modules::FlowTable]")
 	types::RawPacket pkt_a2(0, 54, pkt_data_a2);
 	types::RawPacket pkt_a3(0, 54, pkt_data_a3);
 	types::RawPacket pkt_a4(0, 54, pkt_data_a4);
+	types::RawPacket pkt_a5(0, 54, pkt_data_a5);
 	types::RawPacket pkt_b1(0, 62, pkt_data_b1);
 	types::RawPacket pkt_b2(0, 54, pkt_data_b2);
 	types::RawPacket pkt_b3(0, 1434, pkt_data_b3);
@@ -183,6 +205,7 @@ TEST_CASE("FlowTable", "[modules::FlowTable]")
 	auto pair_a2 = parser(pkt_a2);
 	auto pair_a3 = parser(pkt_a3);
 	auto pair_a4 = parser(pkt_a4);
+	auto pair_a5 = parser(pkt_a5);
 	auto pair_b1 = parser(pkt_b1);
 	auto pair_b2 = parser(pkt_b2);
 	auto pair_b3 = parser(pkt_b3);
@@ -254,6 +277,7 @@ TEST_CASE("FlowTable", "[modules::FlowTable]")
 		CHECK_NOTHROW(flow_table.add_packet(pair_a2));
 		CHECK_NOTHROW(flow_table.add_packet(pair_a3));
 		CHECK_NOTHROW(flow_table.add_packet(pair_a4));
+//		CHECK_NOTHROW(flow_table.add_packet(pair_a5));
 
 		CHECK(flow_table.count_flows() == 0);
 		CHECK(flow_table.count_flows_processed() == 1);
@@ -262,43 +286,30 @@ TEST_CASE("FlowTable", "[modules::FlowTable]")
 		CHECK(flow_table.exported_flows().front().key() == pair_a1.first);
 		CHECK(flow_table.exported_flows().front().n_packets() == 4);
 	}
-/*
- * TODO: needs to be rewritten
 
-	SECTION("add_packet(): handles multiple flows simultaneously")
+	SECTION("add_packet(): removes last ack packet")
 	{
 		modules::FlowTable flow_table;
 		flow_table.set_mode(modules::FlowTable::mode::store);
 
-		modules::PCAPReader pcap_reader;
-		pcap_reader.set_file_name("test/data/test.pcap");
-		pcap_reader.set_mode(modules::PCAPReader::mode::store);
-		REQUIRE_NOTHROW(pcap_reader());
+		CHECK_NOTHROW(flow_table.add_packet(pair_a1));
+		CHECK_NOTHROW(flow_table.add_packet(pair_a2));
+		CHECK_NOTHROW(flow_table.add_packet(pair_a3));
+		CHECK_NOTHROW(flow_table.add_packet(pair_a4));
+		CHECK_NOTHROW(flow_table.add_packet(pair_a5));
 
-		REQUIRE(pcap_reader.packets().size() == 36);
-
-		for (auto& packet : pcap_reader.packets()) {
-			auto pair = parser(packet);
-			REQUIRE_NOTHROW(flow_table.add_packet(pair));
-		}
-
-		CHECK(flow_table.exported_flows().size() == 2);
-		flow_table._force_export_udp(true);
-		CHECK(flow_table.exported_flows().size() == 4);
-
-		CHECK(flow_table.count_packets() == 1);
 		CHECK(flow_table.count_flows() == 1);
 
+		CHECK(flow_table.count_flows_processed() == 1);
+		CHECK(flow_table.exported_flows().size() == 1);
+
 		flow_table._force_check_last_ack();
-		CHECK(flow_table.count_packets() == 0);
+
 		CHECK(flow_table.count_flows() == 0);
+		CHECK(flow_table.count_flows_processed() == 1);
+		CHECK(flow_table.exported_flows().size() == 1);
 
-		CHECK(flow_table.count_flows_processed() == 4);
-
-		//TODO: fix test (reports 34?)
-		// 1 packet has been deleted as part of last-ack removal, so count is 36-1 = 35
-//		CHECK(flow_table.count_packets_processed() == 35);
-
+		CHECK(flow_table.exported_flows().front().key() == pair_a1.first);
+		CHECK(flow_table.exported_flows().front().n_packets() == 4);
 	}
- */
 }
