@@ -1,7 +1,7 @@
 
 #include "flow_table.h"
 
-starflow::modules::FlowTable::FlowTable(unsigned id)
+starflow::modules::FlowTable::FlowTable(std::uint16_t id)
 	: _id(id) { }
 
 unsigned starflow::modules::FlowTable::id() const
@@ -12,8 +12,9 @@ unsigned starflow::modules::FlowTable::id() const
 void starflow::modules::FlowTable::add_packet(types::Key key, types::Packet packet)
 	throw(std::logic_error)
 {
-	if (_mode == mode::callback && !_callback)
+	if (!_callback)
 		throw std::logic_error("FlowTable: no callback function set");
+
 
 	auto ts_s = (std::uint32_t)(packet.ts_in_us / _E6);
 	auto flow_table_iter = _lookup_and_insert(std::move(key), std::move(packet));
@@ -24,17 +25,6 @@ void starflow::modules::FlowTable::add_packet(types::Key key, types::Packet pack
 
 	if ((ts_s - _last_ack_check_s) >= _ack_check_interval_s)
 		_check_last_ack(ts_s);
-}
-
-void starflow::modules::FlowTable::add_packet(std::pair<types::Key, types::Packet> pair)
-	throw(std::logic_error)
-{
-	add_packet(pair.first, pair.second);
-}
-
-void starflow::modules::FlowTable::set_mode(enum mode m)
-{
-	_mode = m;
 }
 
 void starflow::modules::FlowTable::set_callback(
@@ -68,18 +58,13 @@ const starflow::modules::FlowTable::flow_table_t& starflow::modules::FlowTable::
 	return _active_flows;
 }
 
-const starflow::modules::FlowTable::exported_flows_table_t&
-	starflow::modules::FlowTable::exported_flows() const
-{
-	return _exported_flows;
-}
-
 void starflow::modules::FlowTable::_force_export_udp(bool complete)
 {
-	for (auto i = std::begin(_active_flows); i != std::end(_active_flows);)
+	for (auto i = std::begin(_active_flows); i != std::end(_active_flows);) {
 		i = i->first.ip_proto == (uint8_t) _ip_proto::udp
 			? _evict_flow(i, (std::uint32_t)(i->second.last_packet().ts_in_us / _E6), complete)
 			: std::next(i, 1);
+	}
 }
 
 void starflow::modules::FlowTable::_force_export_tcp(bool complete)
@@ -149,12 +134,20 @@ void starflow::modules::FlowTable::_check_timeouts(std::uint32_t trigger_ts_s)
 void starflow::modules::FlowTable::_check_last_ack(std::uint32_t trigger_ts_s)
 {
 	auto is_last_ack = [](types::CLFR& flow) -> bool {
-		return flow.key().ip_proto == (uint8_t) _ip_proto::tcp && flow.n_packets() == 1
-			   && flow.packets().front().features.tcp_flags.is_ack();
+		return flow.key().ip_proto == (uint8_t) _ip_proto::tcp
+			   && flow.n_packets() == 1
+			   && flow.packets().front().features.tcp_flags.is_ack()
+			   && !flow.packets().front().features.tcp_flags.is_syn();
 	};
 
-	for (auto i = std::begin(_active_flows); i != std::end(_active_flows);)
-		i = is_last_ack(i->second) ? _delete_flow(i) : std::next(i, 1);
+	for (auto i = std::begin(_active_flows); i != std::end(_active_flows);) {
+		if (is_last_ack(i->second)) {
+			i = _delete_flow(i);
+		} else {
+			i = std::next(i, 1);
+		}
+	}
+//		i = is_last_ack(i->second) ? _delete_flow(i) : std::next(i, 1);
 
 	_last_ack_check_s = trigger_ts_s;
 }
@@ -166,10 +159,7 @@ starflow::modules::FlowTable::flow_table_t::iterator
 	i->second._complete = complete;
 	i->second._evict_ts_s = evict_ts_s;
 
-	if (_mode == mode::callback)
-		_callback(i->second);
-	else if (_mode == mode::store)
-		_exported_flows.emplace_back(i->second);
+	_callback(i->second);
 
 	_n_packets -= i->second.n_packets();
 	_n_flows_processed += 1;

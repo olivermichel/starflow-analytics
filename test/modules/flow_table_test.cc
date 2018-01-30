@@ -190,26 +190,36 @@ TEST_CASE("FlowTable", "[modules::FlowTable]")
 		0xf3, 0x50, 0x11, 0x19, 0x20, 0x3c, 0x64, 0x00, 0x00
 	};
 
-	modules::RawPacketParser parser;
-	types::RawPacket pkt_a1(0, 62, pkt_data_a1);
-	types::RawPacket pkt_a2(0, 54, pkt_data_a2);
-	types::RawPacket pkt_a3(0, 54, pkt_data_a3);
-	types::RawPacket pkt_a4(0, 54, pkt_data_a4);
-	types::RawPacket pkt_a5(0, 54, pkt_data_a5);
-	types::RawPacket pkt_b1(0, 62, pkt_data_b1);
-	types::RawPacket pkt_b2(0, 54, pkt_data_b2);
-	types::RawPacket pkt_b3(0, 1434, pkt_data_b3);
-	types::RawPacket pkt_b4(0, 54, pkt_data_b4);
+	types::Key k_a1, k_a2, k_a3, k_a4, k_a5, k_b1, k_b2, k_b3, k_b4;
 
-	auto pair_a1 = parser(pkt_a1);
-	auto pair_a2 = parser(pkt_a2);
-	auto pair_a3 = parser(pkt_a3);
-	auto pair_a4 = parser(pkt_a4);
-	auto pair_a5 = parser(pkt_a5);
-	auto pair_b1 = parser(pkt_b1);
-	auto pair_b2 = parser(pkt_b2);
-	auto pair_b3 = parser(pkt_b3);
-	auto pair_b4 = parser(pkt_b4);
+	types::Packet
+		p_a1(1517277676000200, 1517277676000500, 62),
+		p_a2(1517277678000200, 1517277678000500, 54),
+		p_a3(1517277680000200, 1517277680000500, 54),
+		p_a4(1517277682000200, 1517277682000500, 54),
+		p_a5(1517277684000200, 1517277684000500, 54),
+		p_b1(1517277677000200, 1517277677000500, 62),
+		p_b2(1517277679000200, 1517277679000500, 54),
+		p_b3(1517277681000200, 1517277681000500, 1434),
+		p_b4(1517277683000200, 1517277683000500, 54);
+
+	types::Packet::parse(pkt_data_a1, k_a1, p_a1);
+	types::Packet::parse(pkt_data_a2, k_a2, p_a2);
+	types::Packet::parse(pkt_data_a3, k_a3, p_a3);
+	types::Packet::parse(pkt_data_a4, k_a4, p_a4);
+	types::Packet::parse(pkt_data_a5, k_a5, p_a5);
+	types::Packet::parse(pkt_data_b1, k_b1, p_b1);
+	types::Packet::parse(pkt_data_b2, k_b2, p_b2);
+	types::Packet::parse(pkt_data_b3, k_b3, p_b3);
+	types::Packet::parse(pkt_data_b4, k_b4, p_b4);
+
+	CHECK(k_a1 == k_a2);
+	CHECK(k_a2 == k_a3);
+	CHECK(k_a3 == k_a4);
+	CHECK(k_a4 == k_a5);
+	CHECK(k_b1 == k_b2);
+	CHECK(k_b2 == k_b3);
+	CHECK(k_b3 == k_b4);
 
 	SECTION("FlowTable(): table id defaults to 0 and tables are empty")
 	{
@@ -234,8 +244,8 @@ TEST_CASE("FlowTable", "[modules::FlowTable]")
 	SECTION("add_packet(): packet and flow counters are incremented")
 	{
 		modules::FlowTable flow_table;
-		flow_table.set_mode(modules::FlowTable::mode::store);
-		CHECK_NOTHROW(flow_table.add_packet(pair_a1));
+		flow_table.set_callback([](types::CLFR clfr) { });
+		CHECK_NOTHROW(flow_table.add_packet(k_a1, p_a1));
 		CHECK(flow_table.count_packets() == 1);
 		CHECK(flow_table.count_flows() == 1);
 	}
@@ -243,21 +253,21 @@ TEST_CASE("FlowTable", "[modules::FlowTable]")
 	SECTION("add_packet(): appends a packet to a flow if the key already exists")
 	{
 		modules::FlowTable flow_table;
-		flow_table.set_mode(modules::FlowTable::mode::store);
-		CHECK_NOTHROW(flow_table.add_packet(pair_a1));
-		CHECK_NOTHROW(flow_table.add_packet(pair_a1));
-		CHECK_NOTHROW(flow_table.add_packet(pair_a1));
+		flow_table.set_callback([](types::CLFR clfr) { });
+		CHECK_NOTHROW(flow_table.add_packet(k_a1, p_a1));
+		CHECK_NOTHROW(flow_table.add_packet(k_a2, p_a2));
+		CHECK_NOTHROW(flow_table.add_packet(k_a3, p_a3));
 		CHECK(flow_table.count_packets() == 3);
 		CHECK(flow_table.count_flows() == 1);
 	}
 
-	SECTION("add_packet(): starts a new flow if the key is not unknown")
+	SECTION("add_packet(): starts a new flow if the key is unknown")
 	{
 		modules::FlowTable flow_table;
-		flow_table.set_mode(modules::FlowTable::mode::store);
-		CHECK_NOTHROW(flow_table.add_packet(pair_a1));
-		CHECK_NOTHROW(flow_table.add_packet(pair_a2));
-		CHECK_NOTHROW(flow_table.add_packet(pair_b1));
+		flow_table.set_callback([](types::CLFR clfr) { });
+		CHECK_NOTHROW(flow_table.add_packet(k_a1, p_a1));
+		CHECK_NOTHROW(flow_table.add_packet(k_a2, p_a2));
+		CHECK_NOTHROW(flow_table.add_packet(k_b1, p_b1));
 		CHECK(flow_table.count_packets() == 3);
 		CHECK(flow_table.count_flows() == 2);
 	}
@@ -265,51 +275,61 @@ TEST_CASE("FlowTable", "[modules::FlowTable]")
 	SECTION("add_packet(): throw a logic_error if in callback mode and no callback is set")
 	{
 		modules::FlowTable flow_table;
-		CHECK_THROWS_AS(flow_table.add_packet(pair_a1), std::logic_error);
+		CHECK_THROWS_AS(flow_table.add_packet(k_a1, p_a1), std::logic_error);
 	}
 
 	SECTION("add_packet(): evicts a tcp when seeing a FIN packet")
 	{
-		modules::FlowTable flow_table;
-		flow_table.set_mode(modules::FlowTable::mode::store);
+		std::list<types::CLFR> exported_flows;
 
-		CHECK_NOTHROW(flow_table.add_packet(pair_a1));
-		CHECK_NOTHROW(flow_table.add_packet(pair_a2));
-		CHECK_NOTHROW(flow_table.add_packet(pair_a3));
-		CHECK_NOTHROW(flow_table.add_packet(pair_a4));
-//		CHECK_NOTHROW(flow_table.add_packet(pair_a5));
+		modules::FlowTable flow_table;
+		flow_table.set_callback([&exported_flows](types::CLFR clfr) {
+			exported_flows.push_back(clfr);
+		});
+
+		CHECK_NOTHROW(flow_table.add_packet(k_a1, p_a1));
+		CHECK_NOTHROW(flow_table.add_packet(k_a2, p_a2));
+		CHECK_NOTHROW(flow_table.add_packet(k_a3, p_a3));
+		CHECK_NOTHROW(flow_table.add_packet(k_a4, p_a4));
 
 		CHECK(flow_table.count_flows() == 0);
 		CHECK(flow_table.count_flows_processed() == 1);
 
-		CHECK(flow_table.exported_flows().size() == 1);
-		CHECK(flow_table.exported_flows().front().key() == pair_a1.first);
-		CHECK(flow_table.exported_flows().front().n_packets() == 4);
+		CHECK(exported_flows.size() == 1);
+
+		const types::CLFR& clfr = exported_flows.front();
+		CHECK(clfr.key() == k_a1);
+		CHECK(clfr.n_packets() == 4);
+		CHECK(clfr.evict_ts_s() == 1517277682);
 	}
 
 	SECTION("add_packet(): removes last ack packet")
 	{
+		std::list<types::CLFR> exported_flows;
+
 		modules::FlowTable flow_table;
-		flow_table.set_mode(modules::FlowTable::mode::store);
+		flow_table.set_callback([&exported_flows](types::CLFR clfr) {
+			exported_flows.push_back(clfr);
+		});
 
-		CHECK_NOTHROW(flow_table.add_packet(pair_a1));
-		CHECK_NOTHROW(flow_table.add_packet(pair_a2));
-		CHECK_NOTHROW(flow_table.add_packet(pair_a3));
-		CHECK_NOTHROW(flow_table.add_packet(pair_a4));
-		CHECK_NOTHROW(flow_table.add_packet(pair_a5));
-
+		CHECK_NOTHROW(flow_table.add_packet(k_a1, p_a1));
+		CHECK_NOTHROW(flow_table.add_packet(k_a2, p_a2));
+		CHECK_NOTHROW(flow_table.add_packet(k_a3, p_a3));
 		CHECK(flow_table.count_flows() == 1);
+		CHECK(flow_table.count_packets() == 3);
 
-		CHECK(flow_table.count_flows_processed() == 1);
-		CHECK(flow_table.exported_flows().size() == 1);
-
-		flow_table._force_check_last_ack();
-
+		CHECK_NOTHROW(flow_table.add_packet(k_a4, p_a4));
 		CHECK(flow_table.count_flows() == 0);
-		CHECK(flow_table.count_flows_processed() == 1);
-		CHECK(flow_table.exported_flows().size() == 1);
+		CHECK(flow_table.count_packets() == 0);
 
-		CHECK(flow_table.exported_flows().front().key() == pair_a1.first);
-		CHECK(flow_table.exported_flows().front().n_packets() == 4);
+		CHECK_NOTHROW(flow_table.add_packet(k_a5, p_a5));
+		CHECK(flow_table.count_packets() == 0);
+		CHECK(flow_table.count_flows() == 0);
+
+		CHECK(flow_table.count_flows_processed() == 1);
+		CHECK(exported_flows.size() == 1);
+
+		CHECK(exported_flows.front().key() == k_a1);
+		CHECK(exported_flows.front().n_packets() == 4);
 	}
 }

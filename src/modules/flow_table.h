@@ -14,7 +14,6 @@ namespace starflow {
 		class FlowTable
 		{
 			using flow_table_t           = std::map<types::Key, types::CLFR>;
-			using exported_flows_table_t = std::list<types::CLFR>;
 			using export_flow_callback_t = std::function<void (types::CLFR)>;
 			enum class _ip_proto : uint8_t { icmp = 1, tcp = 6, udp = 17 };
 
@@ -23,7 +22,7 @@ namespace starflow {
 			enum class mode { callback, store };
 
 			FlowTable() = default;
-			explicit FlowTable(unsigned id);
+			explicit FlowTable(std::uint16_t id);
 
 			FlowTable(const FlowTable&)            = delete;
 			FlowTable& operator=(const FlowTable&) = delete;
@@ -36,11 +35,6 @@ namespace starflow {
 			void add_packet(types::Key key, types::Packet packet)
 				throw(std::logic_error);
 
-			void add_packet(std::pair<types::Key, types::Packet> pair)
-				throw(std::logic_error);
-
-			void set_mode(mode m);
-
 			void set_callback(export_flow_callback_t&& callback);
 
 			unsigned long long count_packets_processed() const;
@@ -49,8 +43,6 @@ namespace starflow {
 			unsigned long long count_flows() const;
 
 			const flow_table_t& flows() const;
-
-			const exported_flows_table_t& exported_flows() const;
 
 			// for unit tests:
 			void _force_export_tcp(bool complete = false);
@@ -63,7 +55,6 @@ namespace starflow {
 
 			uint16_t _id                                       = 0;
 			flow_table_t _active_flows                         = {};
-			exported_flows_table_t _exported_flows             = {};
 
 			std::uint32_t _to_check_interval_s                 = 5;
 			std::uint32_t _ack_check_interval_s                = 1;

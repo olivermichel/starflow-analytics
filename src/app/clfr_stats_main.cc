@@ -36,11 +36,11 @@ int main(int argc, char** argv)
 		std::time_t first_evict_time = first.evict_ts_s();
 		std::time_t last_evict_time  = last.evict_ts_s();
 
-		std::cout << "File name:                 " << argv[1] << std::endl;
-		std::cout << "Number of CLFRs:           " << clfr_count << std::endl;
-		std::cout << "First eviction:            "
+		std::cout << "File name:            " << argv[1] << std::endl;
+		std::cout << "Number of CLFRs:      " << clfr_count << std::endl;
+		std::cout << "First eviction:       "
 				  << std::put_time(std::localtime(&first_evict_time), "%F %H:%M:%S%z") << std::endl;
-		std::cout << "Last eviction:             "
+		std::cout << "Last eviction:        "
 				  << std::put_time(std::localtime(&last_evict_time), "%F %H:%M:%S%z") << std::endl;
 
 	} catch (std::runtime_error& e) {
