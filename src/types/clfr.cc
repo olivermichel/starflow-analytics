@@ -112,3 +112,8 @@ bool starflow::types::CLFR::operator!=(const starflow::types::CLFR& other) const
 {
 	return !operator==(other);
 }
+
+void starflow::types::CLFR::_set_evict_ts_s(std::uint32_t evict_ts_s)
+{
+	_evict_ts_s = evict_ts_s;
+}

@@ -32,7 +32,7 @@ TEST_CASE("CLFR", "[types::CLFR]")
 	{
 		types::CLFR clfr1(k1, 1, 5);
 		clfr1.add_packet(types::Packet(32323, 32324, 16));
-		clfr1.add_packet(types::Packet(24222, 24223, 32));
+		clfr1._set_evict_ts_s(1517277676);
 
 		proto::clfr proto_clfr = clfr1.to_proto();
 		types::CLFR clfr2(proto_clfr);

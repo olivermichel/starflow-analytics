@@ -54,6 +54,8 @@ namespace starflow {
 			bool operator==(const CLFR& other) const;
 			bool operator!=(const CLFR& other) const;
 
+			void _set_evict_ts_s(std::uint32_t evict_ts_s);
+
 			virtual ~CLFR() = default;
 
 		private:
