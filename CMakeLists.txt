@@ -25,6 +25,7 @@ set(MODULES_SRC
         ${MODULES_DIR}/clfr_file_reader.h ${MODULES_DIR}/clfr_file_reader.cc
         ${MODULES_DIR}/clfr_file_writer.h ${MODULES_DIR}/clfr_file_writer.cc
         ${MODULES_DIR}/counter.h ${MODULES_DIR}/counter.cc
+        ${MODULES_DIR}/ewma.h ${MODULES_DIR}/ewma.cc
         ${MODULES_DIR}/filter.h ${MODULES_DIR}/filter.cc
         ${MODULES_DIR}/flow_table.h ${MODULES_DIR}/flow_table.cc
         ${MODULES_DIR}/live_capture.h ${MODULES_DIR}/live_capture.cc
@@ -88,3 +89,4 @@ include(cmake/exe/pcap_flow_file_exporter.cmake)
 include(cmake/exe/test_ui_client.cmake)
 include(cmake/exe/packet_counts.cmake)
 include(cmake/exe/clfr_stats.cmake)
+include(cmake/exe/ewma_latencies.cmake)
