@@ -40,10 +40,6 @@ bool starflow::types::Packet::parse(const unsigned char* buf, Key& key, Packet& 
 
 	pkt.len = ntohs(ip->ip_len)+(outer_eth ? sizeof(eth) : 0);
 
-	pkt.ts_out_us = 0;
-	pkt.qid  = 0;
-	pkt.qlen = 0;
-
 	return true;
 }
 

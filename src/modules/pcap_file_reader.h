@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <pcap.h>
+#include <random>
 #include "../types/packet.h"
 
 namespace starflow {
@@ -44,6 +45,9 @@ namespace starflow {
 			pcap* _pcap = nullptr;
 			bool _end;
 			bool _outer_eth;
+
+			std::random_device _random_device;
+			std::mt19937 _random_generator;
 
 			pcap* _open(const std::string& file_name) throw (std::runtime_error);
 			bool _peek() throw (std::runtime_error);
