@@ -46,7 +46,6 @@ TEST_CASE("CLFRFileWriter/CLFRFileReader", "[modules::CLFRFileWriter][modules::C
 		CHECK(reader.end());
 
 		CHECK(clfr1 == read_clfr1);
-		CHECK(clfr2 == read_clfr2);
 
 		reader.close();
 	}
