@@ -12,37 +12,37 @@ message HelloRequest { }
 message HelloReply { }
 
 message packet {
-    int64 ts_in_us    = 1;
-    int64 ts_out_us   = 2;
-    int32 len         = 3;
-    int32 qid         = 4;
-    int32 qlen        = 5;
+    uint64 ts_in_us   = 1;
+    uint64 ts_out_us  = 2;
+    uint32 len        = 3;
+    uint32 qid        = 4;
+    uint32 qlen       = 5;
     features features = 6;
 }
 
 message key {
-    int32 ip_proto = 1;
-    int32 ip_src   = 2;
-    int32 ip_dst   = 3;
-    int32 th_sport = 4;
-    int32 th_dport = 5;
+    uint32 ip_proto = 1;
+    uint32 ip_src   = 2;
+    uint32 ip_dst   = 3;
+    uint32 th_sport = 4;
+    uint32 th_dport = 5;
 }
 
 message tcp_flags {
-    int32 flags = 1;
+    uint32 flags = 1;
 }
 
 message features {
-    int32 tcp_seq       = 1;
+    uint32 tcp_seq      = 1;
     tcp_flags tcp_flags = 2;
 }
 
 message clfr {
     key key                 = 1;
     bool complete           = 2;
-    int64 id                = 3;
-    int32 evict_ts_s        = 4;
-    int32 table_id          = 5;
+    uint64 id               = 3;
+    uint32 evict_ts_s       = 4;
+    uint32 table_id         = 5;
     repeated packet packets = 6;
 }
 
