@@ -60,7 +60,8 @@ namespace starflow {
 			bool operator!=(const Features& other) const;
 
 			//TODO: look at std::optional spec;
-			unsigned tcp_seq = 0;
+			std::uint32_t tcp_seq = 0;
+			std::uint32_t tcp_pl_len = 0;
 			tcp_flags_t tcp_flags = tcp_flags_t(0);
 
 			proto::features to_proto() const;

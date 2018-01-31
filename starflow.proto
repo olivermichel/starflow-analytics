@@ -34,7 +34,8 @@ message tcp_flags {
 
 message features {
     uint32 tcp_seq      = 1;
-    tcp_flags tcp_flags = 2;
+    uint32 tcp_pl_len   = 2;
+    tcp_flags tcp_flags = 3;
 }
 
 message clfr {
