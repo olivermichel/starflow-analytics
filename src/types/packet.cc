@@ -8,8 +8,10 @@
 #include <netinet/udp.h>
 #include <arpa/inet.h>
 
-bool starflow::types::Packet::parse(const unsigned char* buf, Key& key, Packet& pkt, bool outer_eth)
+bool starflow::types::Packet::parse(const unsigned char* buf, std::size_t len, Key& key, Packet& pkt, bool outer_eth)
 {
+	//TODO: use len argument to prevent memory issues, verify IP total length
+
 	std::size_t pkt_offset = 0;
 
 	struct ether_header* eth = nullptr;
@@ -31,8 +33,10 @@ bool starflow::types::Packet::parse(const unsigned char* buf, Key& key, Packet& 
 	if (ip->ip_p == IPPROTO_TCP) {
 		tcp = (struct tcphdr*) (buf + pkt_offset);
 		key = {ip->ip_p, ip->ip_src, ip->ip_dst, ntohs(tcp->th_sport), ntohs(tcp->th_dport)};
-		pkt.features.tcp_flags = starflow::types::Features::tcp_flags_t(tcp->th_flags);
-		pkt.features.tcp_seq   = ntohl(tcp->th_seq);
+		pkt.features.tcp_flags  = starflow::types::Features::tcp_flags_t(tcp->th_flags);
+		pkt.features.tcp_seq    = ntohl(tcp->th_seq);
+		pkt.features.tcp_pl_len = ntohs(ip->ip_len) - sizeof(struct ip) - tcp->th_off * 4;
+
 	} else if (ip->ip_p == IPPROTO_UDP) {
 		udp = (struct udphdr*) (buf + pkt_offset);
 		key = {ip->ip_p, ip->ip_src, ip->ip_dst, ntohs(udp->uh_sport), ntohs(udp->uh_dport)};

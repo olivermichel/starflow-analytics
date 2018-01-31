@@ -15,7 +15,7 @@ void starflow::modules::PCAPFileReader::next(starflow::types::Key& key, starflow
 {
 	_end = _peek();
 
-	starflow::types::Packet::parse(_pl_buf, key, pkt, _outer_eth);
+	starflow::types::Packet::parse(_pl_buf, _hdr->len, key, pkt, _outer_eth);
 
 	std::normal_distribution<> delay_dist(500, 100);
 	std::normal_distribution<> qlen_dist(10, 3);

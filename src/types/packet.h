@@ -14,7 +14,8 @@ namespace starflow {
 		{
 		public:
 
-			static bool parse(const unsigned char* buf, Key& key, Packet& pkt, bool outer_eth = true);
+			static bool parse(const unsigned char* buf, std::size_t len, Key& key, Packet& pkt,
+							  bool outer_eth = true);
 
 			Packet()                         = default;
 			Packet(const proto::packet& p);

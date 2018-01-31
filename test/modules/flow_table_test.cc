@@ -203,15 +203,15 @@ TEST_CASE("FlowTable", "[modules::FlowTable]")
 		p_b3(1517277681000200, 1517277681000500, 1434),
 		p_b4(1517277683000200, 1517277683000500, 54);
 
-	types::Packet::parse(pkt_data_a1, k_a1, p_a1);
-	types::Packet::parse(pkt_data_a2, k_a2, p_a2);
-	types::Packet::parse(pkt_data_a3, k_a3, p_a3);
-	types::Packet::parse(pkt_data_a4, k_a4, p_a4);
-	types::Packet::parse(pkt_data_a5, k_a5, p_a5);
-	types::Packet::parse(pkt_data_b1, k_b1, p_b1);
-	types::Packet::parse(pkt_data_b2, k_b2, p_b2);
-	types::Packet::parse(pkt_data_b3, k_b3, p_b3);
-	types::Packet::parse(pkt_data_b4, k_b4, p_b4);
+	types::Packet::parse(pkt_data_a1, 62,   k_a1, p_a1);
+	types::Packet::parse(pkt_data_a2, 54,   k_a2, p_a2);
+	types::Packet::parse(pkt_data_a3, 54,   k_a3, p_a3);
+	types::Packet::parse(pkt_data_a4, 54,   k_a4, p_a4);
+	types::Packet::parse(pkt_data_a5, 54,   k_a5, p_a5);
+	types::Packet::parse(pkt_data_b1, 62,   k_b1, p_b1);
+	types::Packet::parse(pkt_data_b2, 54,   k_b2, p_b2);
+	types::Packet::parse(pkt_data_b3, 1434, k_b3, p_b3);
+	types::Packet::parse(pkt_data_b4, 54,   k_b4, p_b4);
 
 	CHECK(k_a1 == k_a2);
 	CHECK(k_a2 == k_a3);
