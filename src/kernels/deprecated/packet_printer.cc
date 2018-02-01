@@ -1,8 +1,8 @@
 
 #include "packet_printer.h"
 
-#include "../types/key.h"
-#include "../types/packet.h"
+#include "../../types/key.h"
+#include "../../types/packet.h"
 
 starflow::kernels::PacketPrinter::PacketPrinter(bool sink, std::ostream& os)
 	: _sink(sink), _os(os)
