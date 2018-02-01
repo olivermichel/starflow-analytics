@@ -3,34 +3,34 @@
 
 #include "../etc/format_helpers.h"
 #include "../kernels/clfr_file_reader.h"
+#include "../kernels/filter.h"
 #include "../kernels/formatted_printer.h"
 #include "../kernels/group_by.h"
 
 template <typename key_t, typename argument_t, typename return_t>
 class OOS
 {
+	using _state_t = std::pair<std::uint32_t, return_t>;
+
 public:
-
-	using state_t = std::pair<argument_t, return_t>;
-
 	return_t operator()(key_t k, argument_t s) {
 
-		auto i = _s.find(k);
+		typename std::map<key_t, _state_t>::iterator i;
+		auto& f = s.features;
 
-		if (i == std::end(_s)) {
-			_s.insert(std::make_pair(k, std::make_pair(s, 0)));
-			return 0;
-		} else {
-			std::uint32_t last_seq = i->second.first;
-		}
+		if ((i = _s.find(k)) == std::end(_s))
+			i = _s.emplace(k, std::make_pair(f.tcp_seq, 0)).first;
 
-		return v;
+		if (i->second.first != f.tcp_seq)
+			i->second.second++;
+
+		i->second.first += (f.tcp_flags.is_syn() || f.tcp_flags.is_fin() ? 1 : f.tcp_pl_len);
+		return i->second.second;
 	}
 
 private:
-	std::map<key_t, state_t> _s;
+	std::map<key_t, _state_t> _s;
 };
-
 
 int main(int argc, char** argv)
 {
@@ -40,11 +40,35 @@ int main(int argc, char** argv)
 	}
 
 	namespace sf = starflow;
-	//	using oos_per_flow_t = std::pair<sf::types::Key, std::pair<std::uint32_t, unsigned>>;
+	using oos_per_flow_t = std::pair<sf::types::Key, unsigned int>;
 
-	// key_t, argument_t, return_t
-	OOS<sf::types::Key, std::pair<std::uint32_t, std::uint16_t>, uint16_t> oos;
+	using key_t = starflow::types::Key;
+	using arg_t = starflow::types::Packet;
+	using res_t = unsigned int;
 
+	OOS<key_t, arg_t, res_t> oos;
+
+	sf::kernels::CLFRFileReader clfr_file_reader(argv[1]);
+
+	sf::kernels::Filter<sf::types::CLFR> tcp_filter([](const sf::types::CLFR& clfr) {
+		return clfr.key().ip_proto == 6;
+	});
+
+	sf::kernels::GroupBy<oos_per_flow_t> flow_tcp_oos([&oos](const sf::types::CLFR& clfr) {
+		unsigned int oos_packets = 0;
+		for (auto& packet : clfr.packets())
+			oos_packets = oos(clfr.key(), packet);
+		return std::make_pair(clfr.key(), oos_packets);
+	});
+
+	sf::kernels::FormattedPrinter<oos_per_flow_t> printer(
+		[](std::ostream& os, const oos_per_flow_t& p) {
+			os << p.first.str_desc() << " -> " << p.second << std::endl;
+	});
+
+	raft::map m;
+	m += clfr_file_reader >> tcp_filter >> flow_tcp_oos >> printer;
+	m.exe();
 
 	return 0;
 }
