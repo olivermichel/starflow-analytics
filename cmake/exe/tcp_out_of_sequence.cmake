@@ -1,13 +1,17 @@
 
 add_executable(tcp_out_of_sequence
-        ${ETC_SRC}
-        ${KERNELS_SRC}
-        ${MODULES_SRC}
-        ${PROTO_SRC}
-        ${TYPES_SRC}
-        src/app/tcp_out_of_sequence_main.cc)
+    src/app/tcp_out_of_sequence_main.cc
+    src/etc/format_helpers.cc
+    src/kernels/clfr_file_reader.cc
+    src/kernels/filter.cc
+    src/kernels/formatted_printer.cc
+    src/kernels/group_by.cc
+    src/modules/clfr_file_reader.cc
+    src/proto/starflow.pb.cc
+    src/types/clfr.cc
+    src/types/features.cc
+    src/types/key.cc
+    src/types/packet.cc)
 
 target_link_libraries(tcp_out_of_sequence protobuf)
-target_link_libraries(tcp_out_of_sequence pcap)
 target_link_libraries(tcp_out_of_sequence raft)
-target_link_libraries(tcp_out_of_sequence grpc++)
