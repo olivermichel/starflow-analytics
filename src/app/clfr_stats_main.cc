@@ -9,14 +9,12 @@ int main(int argc, char** argv)
 {
 	namespace sf = starflow;
 
-
 	if (argc != 2) {
 		std::cerr << "Usage: " << argv[0] << " <data.clfr>" << std::endl;
 		return 1;
 	}
 
 	try {
-
 		unsigned long clfr_count = 0;
 		sf::types::CLFR  first{}, last{}, current{};
 

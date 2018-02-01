@@ -1,13 +1,14 @@
 
 add_executable(clfr_stats
-        ${ETC_SRC}
-        ${KERNELS_SRC}
-        ${MODULES_SRC}
-        ${PROTO_SRC}
-        ${TYPES_SRC}
-        src/app/clfr_stats_main.cc)
+        src/app/clfr_stats_main.cc
+        src/etc/format_helpers.cc
+        src/modules/clfr_file_reader.cc
+        src/proto/starflow.pb.cc
+        src/types/clfr.cc
+        src/types/features.cc
+        src/types/key.cc
+        src/types/packet.cc)
 
 target_link_libraries(clfr_stats protobuf)
-target_link_libraries(clfr_stats pcap)
 target_link_libraries(clfr_stats raft)
-target_link_libraries(clfr_stats grpc++)
+
