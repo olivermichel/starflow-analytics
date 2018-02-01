@@ -84,10 +84,10 @@ add_custom_command(
              --plugin=protoc-gen-grpc=${GRPC_CPP_GEN} starflow.proto
         WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
 
-include(cmake/exe/test_runner.cmake)
-include(cmake/exe/pcap_flow_file_exporter.cmake)
-include(cmake/exe/test_ui_client.cmake)
-include(cmake/exe/packet_counts.cmake)
-include(cmake/exe/clfr_stats.cmake)
-include(cmake/exe/ewma_latencies.cmake)
-include(cmake/exe/tcp_out_of_sequence.cmake)
+include(cmake/app/test_runner.cmake)
+include(cmake/app/pcap_flow_file_exporter.cmake)
+include(cmake/app/test_ui_client.cmake)
+include(cmake/app/packet_counts.cmake)
+include(cmake/app/clfr_stats.cmake)
+include(cmake/app/ewma_latencies.cmake)
+include(cmake/app/tcp_out_of_sequence.cmake)
