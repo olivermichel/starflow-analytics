@@ -55,7 +55,7 @@ int main(int argc, char** argv)
 		return clfr.key().ip_proto == 6;
 	});
 
-	sf::kernels::GroupBy<count_per_flow_t> flow_tcp_oos([&non_monot](const sf::types::CLFR& clfr){
+	sf::kernels::GroupBy<sf::types::CLFR, count_per_flow_t> flow_tcp_nm([&non_monot](const sf::types::CLFR& clfr){
 		unsigned int non_monotonic_packets = 0;
 		for (auto& packet : clfr.packets())
 			non_monotonic_packets = non_monot(clfr.key(), packet);
@@ -68,7 +68,7 @@ int main(int argc, char** argv)
 		});
 
 	raft::map m;
-	m += clfr_file_reader >> tcp_filter >> flow_tcp_oos >> printer;
+	m += clfr_file_reader >> tcp_filter >> flow_tcp_nm >> printer;
 	m.exe();
 
 	return 0;

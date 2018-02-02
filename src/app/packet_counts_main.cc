@@ -21,8 +21,9 @@ int main(int argc, char** argv)
 
 	sf::kernels::CLFRFileReader clfr_file_reader(argv[1]);
 
-	sf::kernels::GroupBy<pkts_per_ip_t> src_ip_counter([&pkt_counts](const sf::types::CLFR& clfr) {
-		return pkt_counts += std::make_pair(clfr.key().ip_src, clfr.n_packets());
+	sf::kernels::GroupBy<sf::types::CLFR, pkts_per_ip_t> src_ip_counter(
+		[&pkt_counts](const sf::types::CLFR& clfr) {
+			return pkt_counts += std::make_pair(clfr.key().ip_src, clfr.n_packets());
 	});
 
 	sf::kernels::FormattedPrinter<pkts_per_ip_t> printer(

@@ -7,28 +7,28 @@
 
 namespace starflow {
 	namespace kernels {
-		template<typename O>
+		template<typename I, typename O>
 		class GroupBy : public raft::kernel
 		{
 		public:
-			explicit GroupBy(std::function<O (const starflow::types::CLFR&)>&& aggregator)
+			explicit GroupBy(std::function<O (const I&)>&& aggregator)
 				: _aggregator(aggregator)
 			{
-				input.add_port<starflow::types::CLFR>("clfr_in");
+				input.template add_port<I>("in");
 				output.template add_port<O>("out");
 			}
 
 			raft::kstatus run() override
 			{
-				starflow::types::CLFR clfr;
-				input["clfr_in"].pop(clfr);
-				auto pair = _aggregator(clfr);
+				I i;
+				input["in"].pop(i);
+				auto pair = _aggregator(i);
 				output["out"].push(pair);
 				return raft::proceed;
 			}
 
 		private:
-			std::function<O (const starflow::types::CLFR&)> _aggregator;
+			std::function<O (const I&)> _aggregator;
 		};
 	}
 }

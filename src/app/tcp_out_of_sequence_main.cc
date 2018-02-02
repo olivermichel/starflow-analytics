@@ -50,15 +50,17 @@ int main(int argc, char** argv)
 
 	sf::kernels::CLFRFileReader clfr_file_reader(argv[1]);
 
-	sf::kernels::Filter<sf::types::CLFR> tcp_filter([](const sf::types::CLFR& clfr) {
-		return clfr.key().ip_proto == 6;
+	sf::kernels::Filter<sf::types::CLFR> tcp_filter(
+		[](const sf::types::CLFR& clfr) {
+			return clfr.key().ip_proto == 6;
 	});
 
-	sf::kernels::GroupBy<oos_per_flow_t> flow_tcp_oos([&oos](const sf::types::CLFR& clfr) {
-		unsigned int oos_packets = 0;
-		for (auto& packet : clfr.packets())
-			oos_packets = oos(clfr.key(), packet);
-		return std::make_pair(clfr.key(), oos_packets);
+	sf::kernels::GroupBy<sf::types::CLFR, oos_per_flow_t> flow_tcp_oos(
+		[&oos](const sf::types::CLFR& clfr) {
+			unsigned int oos_packets = 0;
+			for (auto& packet : clfr.packets())
+				oos_packets = oos(clfr.key(), packet);
+			return std::make_pair(clfr.key(), oos_packets);
 	});
 
 	sf::kernels::FormattedPrinter<oos_per_flow_t> printer(
