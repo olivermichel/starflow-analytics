@@ -2,24 +2,58 @@
 #include <raft>
 
 #include "../etc/format_helpers.h"
+#include "../kernels/benchmark_printer.h"
 #include "../kernels/clfr_file_reader.h"
 #include "../kernels/formatted_printer.h"
 #include "../kernels/group_by.h"
 #include "../modules/counter.h"
 
+#include <cxxopts/cxxopts.h>
+
+struct config {
+	std::string input;
+	bool benchmark;
+};
+
+void _print_help(cxxopts::Options& opts, int exit_code = 0)
+{
+	if (exit_code == 0)
+		std::cout << opts.help({""}) << std::endl;
+	else
+		std::cerr << opts.help({""}) << std::endl;
+
+	exit(exit_code);
+}
+
 int main(int argc, char** argv)
 {
-	if (argc != 2) {
-		std::cerr << "Usage: " << argv[0] << " <data.clfr>" << std::endl;
-		return 1;
-	}
+	config config { };
+
+	cxxopts::Options opts("packet_counts", " - counts packets per source address");
+
+	opts.add_options()
+		("i,input", "CLFR input file (required)", cxxopts::value<std::string>(), "FILE")
+		("b,benchmark", "print benchmarking information instead of app output")
+		("h,help", "print this help message");
+
+	auto parsed_opts = opts.parse(argc, argv);
+
+	if (parsed_opts.count("h"))
+		_print_help(opts);
+
+	if (parsed_opts.count("i"))
+		config.input = parsed_opts["i"].as<std::string>();
+	else
+		_print_help(opts, 1);
+
+	config.benchmark = (bool) parsed_opts.count("b");
 
 	namespace sf = starflow;
 	using pkts_per_ip_t = std::pair<sf::types::ip_addr_t, unsigned long>;
 
 	sf::modules::Counter<sf::types::ip_addr_t> pkt_counts;
 
-	sf::kernels::CLFRFileReader clfr_file_reader(argv[1]);
+	sf::kernels::CLFRFileReader clfr_file_reader(config.input);
 
 	sf::kernels::GroupBy<sf::types::CLFR, pkts_per_ip_t> src_ip_counter(
 		[&pkt_counts](const sf::types::CLFR& clfr) {
@@ -32,8 +66,15 @@ int main(int argc, char** argv)
 			   << " -> " << p.second << std::endl;
 	});
 
+	sf::kernels::BenchmarkPrinter<pkts_per_ip_t> benchmark;
+
 	raft::map m;
-	m += clfr_file_reader >> src_ip_counter >> printer;
+
+	if (config.benchmark)
+		m += clfr_file_reader >> src_ip_counter >> benchmark;
+	else
+		m += clfr_file_reader >> src_ip_counter >> printer;
+
 	m.exe();
 
 	return 0;
