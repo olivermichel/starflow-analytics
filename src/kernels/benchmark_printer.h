@@ -4,6 +4,7 @@
 
 #include <raft>
 #include <numeric>
+#include <stdexcept>
 
 #include "../etc/timer.h"
 
@@ -67,25 +68,49 @@ namespace starflow {
 				_done = true;
 			}
 
-			inline const std::vector<unsigned long>& counts() const
+			inline const std::vector<unsigned long>& counts() const throw (std::logic_error)
 			{
+				if (!_done)
+					throw std::logic_error("BenchmarkPrinter: collection not yet finalized");
+
 				return _counts;
 			}
 
-			unsigned long long runtime_ms() const
+			unsigned long long runtime_ms() const throw (std::logic_error)
 			{
+				if (!_done)
+					throw std::logic_error("BenchmarkPrinter: collection not yet finalized");
+
 				return (unsigned)
 					std::chrono::duration_cast<std::chrono::milliseconds>(_end - _start).count();
 			}
 
-			inline const unsigned long total() const
+			inline const unsigned long total() const throw (std::logic_error)
 			{
+				if (!_done)
+					throw std::logic_error("BenchmarkPrinter: collection not yet finalized");
+
 				return std::accumulate(std::begin(_counts), std::end(_counts), (unsigned) 0);
 			}
 
-			inline const double mean_per_interval() const
+			inline const double mean_per_interval() const throw (std::logic_error)
 			{
+				if (!_done)
+					throw std::logic_error("BenchmarkPrinter: collection not yet finalized");
+
 				return total() / _counts.size();
+			}
+
+			void print_results(std::ostream& os = std::cout) const throw (std::logic_error)
+			{
+				if (!_done)
+					throw std::logic_error("BenchmarkPrinter: collection not yet finalized");
+
+				os  << _counts.front() << " " << total() << " " << runtime_ms() << " "
+					<< mean_per_interval() << std::endl;
+
+				for (unsigned i = 1; i < _counts.size(); i++)
+					os << _counts[i] << std::endl;
 			}
 
 		private:
