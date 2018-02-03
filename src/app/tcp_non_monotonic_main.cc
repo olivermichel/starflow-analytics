@@ -2,10 +2,13 @@
 #include <raft>
 
 #include "../etc/format_helpers.h"
+#include "../kernels/benchmark_printer.h"
 #include "../kernels/clfr_file_reader.h"
 #include "../kernels/filter.h"
 #include "../kernels/formatted_printer.h"
 #include "../kernels/group_by.h"
+
+#include <cxxopts/cxxopts.h>
 
 template <typename key_t, typename argument_t, typename return_t>
 class TCPNonMonotonic
@@ -33,12 +36,44 @@ private:
 	std::map<key_t, _state_t> _s;
 };
 
+struct config {
+	std::string input;
+	bool benchmark;
+};
+
+void _print_help(cxxopts::Options& opts, int exit_code = 0)
+{
+	if (exit_code == 0)
+		std::cout << opts.help({""}) << std::endl;
+	else
+		std::cerr << opts.help({""}) << std::endl;
+
+	exit(exit_code);
+}
+
 int main(int argc, char** argv)
 {
-	if (argc != 2) {
-		std::cerr << "Usage: " << argv[0] << " <data.clfr>" << std::endl;
-		return 1;
-	}
+	config config { };
+
+	cxxopts::Options opts("tcp_non_monotonic", " - ");
+
+	opts.add_options()
+		("i,input", "CLFR input file (required)", cxxopts::value<std::string>(), "FILE")
+		("b,benchmark", "print benchmarking information instead of app output")
+		("h,help", "print this help message");
+
+	auto parsed_opts = opts.parse(argc, argv);
+
+	if (parsed_opts.count("h"))
+		_print_help(opts);
+
+	if (parsed_opts.count("i"))
+		config.input = parsed_opts["i"].as<std::string>();
+	else
+		_print_help(opts, 1);
+
+	config.benchmark = (bool) parsed_opts.count("b");
+
 
 	namespace sf = starflow;
 
@@ -49,7 +84,7 @@ int main(int argc, char** argv)
 	TCPNonMonotonic<key_t, arg_t, res_t> non_monot;
 	using count_per_flow_t = std::pair<sf::types::Key, unsigned int>;
 
-	sf::kernels::CLFRFileReader clfr_file_reader(argv[1]);
+	sf::kernels::CLFRFileReader clfr_file_reader(config.input);
 
 	sf::kernels::Filter<sf::types::CLFR> tcp_filter([](const sf::types::CLFR& clfr) {
 		return clfr.key().ip_proto == 6;
@@ -67,9 +102,29 @@ int main(int argc, char** argv)
 			os << p.first.str_desc() << " -> " << p.second << std::endl;
 		});
 
+	sf::kernels::BenchmarkPrinter<count_per_flow_t> benchmark;
+
 	raft::map m;
-	m += clfr_file_reader >> tcp_filter >> flow_tcp_nm >> printer;
+
+	if (config.benchmark)
+		m += clfr_file_reader >> tcp_filter >> flow_tcp_nm >> benchmark;
+	else
+		m += clfr_file_reader >> tcp_filter >> flow_tcp_nm >> printer;
+
 	m.exe();
+
+
+	if (config.benchmark) {
+		benchmark.done();
+
+		std::cout << "{" << benchmark.total() << ", " << benchmark.runtime_ms() << ", "
+				  << benchmark.mean_per_interval() << ", { ";
+
+		for (unsigned i = 0; i < benchmark.counts().size(); i++)
+			std::cout << benchmark.counts()[i] << (i == benchmark.counts().size() - 1 ? "}}" : ",");
+
+		std::cout << std::endl;
+	}
 
 	return 0;
 }
