@@ -2,6 +2,8 @@
 add_executable(tcp_out_of_sequence
     src/app/tcp_out_of_sequence_main.cc
     src/etc/format_helpers.cc
+    src/etc/timer.cc
+    src/kernels/benchmark_printer.cc
     src/kernels/clfr_file_reader.cc
     src/kernels/filter.cc
     src/kernels/formatted_printer.cc
