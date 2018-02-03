@@ -79,14 +79,7 @@ int main(int argc, char** argv)
 
 	if (config.benchmark) {
 		benchmark.done();
-
-		std::cout << "{" << benchmark.total() << ", " << benchmark.runtime_ms() << ", "
-					<< benchmark.mean_per_interval() << ", { ";
-
-		for (unsigned i = 0; i < benchmark.counts().size(); i++)
-			std::cout << benchmark.counts()[i] << (i == benchmark.counts().size() - 1 ? "}}" : ",");
-
-		std::cout << std::endl;
+		benchmark.print_results();
 	}
 
 	return 0;
