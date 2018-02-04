@@ -43,11 +43,8 @@ struct config {
 
 void _print_help(cxxopts::Options& opts, int exit_code = 0)
 {
-	if (exit_code == 0)
-		std::cout << opts.help({""}) << std::endl;
-	else
-		std::cerr << opts.help({""}) << std::endl;
-
+	std::ostream& os = (exit_code ? std::cerr : std::cout);
+	os << opts.help({""}) << std::endl;
 	exit(exit_code);
 }
 
