@@ -85,6 +85,7 @@ add_custom_command(
              --plugin=protoc-gen-grpc=${GRPC_CPP_GEN} starflow.proto
         WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
 
+include(cmake/app/active_connections.cmake)
 include(cmake/app/clfr_stats.cmake)
 include(cmake/app/ewma_latencies.cmake)
 include(cmake/app/flowlet_size_histogram.cmake)
