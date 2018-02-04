@@ -10,6 +10,7 @@
 * libgrpc [[4]](https://github.com/grpc/grpc)
 * catch [[5]](https://github.com/catchorg/Catch2) (is automatically integrated when running cmake)
 * cxxopts [[6]](https://github.com/jarro2783/cxxopts) (is automatically integrated when running cmake)
+* gnuplot [[7]](http://www.gnuplot.info)
 
 ### Build
 
@@ -35,7 +36,7 @@ make test
 |CLFRFileWriter      |CLFR                                  |*none*                                |
 |CLFRPrinter         |CLFR                                  |CLFR *or none*                        |
 |FlowTable           |Key, Packet                           |CLFR                                  |
-|GroupBy             |CLFR                                  |*T*
+|GroupBy             |*T*                                   |*U*
 |LiveCapture         |*none*                                |RawPacket                             |
 |Map                 |*T*                                   |*U*                                 |
 |Filter              |*T*                                   |*T*                                   |
@@ -52,4 +53,5 @@ make test
 [3] https://github.com/google/protobuf \
 [4] https://github.com/grpc/grpc \
 [5] https://github.com/catchorg/Catch2 \
-[6] https://github.com/jarro2783/cxxopts
+[6] https://github.com/jarro2783/cxxopts \
+[7] http://www.gnuplot.info
