@@ -17,5 +17,5 @@ ADD . starflow_analytics
 RUN cd starflow_analytics \
     && mkdir build \
     && cd build \
-    && cmake .. \
+    && cmake -DCMAKE_BUILD_TYPE=Release .. \
     && make
