@@ -62,7 +62,9 @@ namespace starflow {
 
 			void done()
 			{
-				std::cout << std::endl;
+				if (_show_status)
+					std::cout << std::endl;
+
 				_end = std::chrono::steady_clock::now();
 				_counts.push_back(_current);
 				_done = true;

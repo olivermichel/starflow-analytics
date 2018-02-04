@@ -12,3 +12,5 @@ test/include/catch.h
 !test/data/*.bin
 !test/data/*.clfr
 ext/include/cxxopts/cxxopts.h
+benchmark/*.pdf
+benchmark/*.dat
