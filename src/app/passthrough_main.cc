@@ -11,6 +11,7 @@
 struct config {
 	std::string input;
 	bool benchmark;
+	bool verbose;
 };
 
 void _print_help(cxxopts::Options& opts, int exit_code = 0)
@@ -27,6 +28,7 @@ cxxopts::Options _set_options()
 	opts.add_options()
 		("i,input", "CLFR input file (required)", cxxopts::value<std::string>(), "FILE")
 		("b,benchmark", "print benchmarking information instead of app output")
+		("v,verbose", "print intermediate output")
 		("h,help", "print this help message");
 
 	return opts;
@@ -48,6 +50,8 @@ config _parse_config(cxxopts::Options opts, int argc, char** argv)
 
 	config.benchmark = (bool) parsed_opts.count("b");
 
+	config.verbose = (bool) parsed_opts.count("v");
+
 	return config;
 }
 
@@ -60,8 +64,11 @@ int main(int argc, char** argv)
 	sf::kernels::CLFRFileReader clfr_file_reader(config.input);
 
 	sf::kernels::FormattedPrinter<sf::types::CLFR> printer(
-		[](std::ostream& os, const sf::types::CLFR& p) {
-			os << p.str_desc() << std::endl;
+		[&config](std::ostream& os, const sf::types::CLFR& c) {
+			if (config.verbose) {
+				for (const auto& p : c.packets())
+					os << p.id(c.key()) << std::endl;
+			}
 	});
 
 	sf::kernels::BenchmarkPrinter<sf::types::CLFR> benchmark {};
