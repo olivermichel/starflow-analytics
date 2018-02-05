@@ -62,14 +62,17 @@ TEST_CASE("Features", "[types::Features]")
 		types::Features feat2;
 		types::Features feat3;
 
+		feat1.ip_id      = 12;
 		feat1.tcp_seq    = 23482;
 		feat1.tcp_pl_len = 203;
 		feat1.tcp_flags  = f1;
 
+		feat2.ip_id      = 14;
 		feat2.tcp_seq    = 28888;
 		feat2.tcp_pl_len = 120;
 		feat2.tcp_flags  = f2;
 
+		feat3.ip_id      = 12;
 		feat3.tcp_seq    = 23482;
 		feat3.tcp_pl_len = 203;
 		feat3.tcp_flags  = f1;
@@ -81,6 +84,7 @@ TEST_CASE("Features", "[types::Features]")
 	SECTION("Features::Features(proto), to_proto()")
 	{
 		types::Features features;
+		features.ip_id      = 12;
 		features.tcp_seq    = 23929228;
 		features.tcp_pl_len = 252;
 		features.tcp_flags  = f1;

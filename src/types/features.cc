@@ -42,20 +42,23 @@ starflow::proto::tcp_flags starflow::types::Features::tcp_flags_t::to_proto() co
 }
 
 starflow::types::Features::Features(const starflow::proto::features& f)
-	: tcp_seq(f.tcp_seq()),
+	: ip_id((std::uint16_t)f.ip_id()),
+	  tcp_seq(f.tcp_seq()),
 	  tcp_pl_len(f.tcp_pl_len()),
 	  tcp_flags(f.tcp_flags()) { }
 
 bool starflow::types::Features::operator==(const starflow::types::Features& other) const
 {
-	return tcp_seq    == other.tcp_seq
+	return ip_id      == other.ip_id
+		&& tcp_seq    == other.tcp_seq
 	    && tcp_pl_len == other.tcp_pl_len
 	    && tcp_flags  == other.tcp_flags;
 }
 
 bool starflow::types::Features::operator!=(const starflow::types::Features& other) const
 {
-	return tcp_seq    != other.tcp_seq
+	return ip_id      != other.ip_id
+		|| tcp_seq    != other.tcp_seq
 	    || tcp_pl_len != other.tcp_pl_len
 	    || tcp_flags  != other.tcp_flags;
 }
@@ -63,6 +66,7 @@ bool starflow::types::Features::operator!=(const starflow::types::Features& othe
 starflow::proto::features starflow::types::Features::to_proto() const
 {
 	proto::features proto_features;
+	proto_features.set_ip_id(ip_id);
 	proto_features.set_tcp_seq(tcp_seq);
 	proto_features.set_tcp_pl_len(tcp_pl_len);
 	proto::tcp_flags* proto_flags = new proto::tcp_flags(tcp_flags.to_proto());
