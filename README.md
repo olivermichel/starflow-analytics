@@ -50,27 +50,27 @@ make test
 
 Pull the image:
 ```bash
-    docker pull olivermichel/starflow_analytics
+docker pull olivermichel/starflow_analytics
 ```
 
 Get interactive shell:
 ```bash
-    docker run -v /home/ubuntu:/root/mnt -it olivermichel/starflow_analytics /bin/bash
+docker run -v /home/ubuntu:/root/mnt -it olivermichel/starflow_analytics /bin/bash
 ```
 
 Generate CLFR Files:
 
 ```bash
-    docker run -v /home/ubuntu:/root/mnt olivermichel/starflow_analytics \
-        /root/starflow_analytics/build/pcap_flow_file_exporter \
-        -v -e ip -i /root/mnt/caida2015_02_dirA_10m.pcap -o /root/mnt/caida2015_02_dirA_10m.clfr
+docker run -v /home/ubuntu:/root/mnt olivermichel/starflow_analytics \
+    /root/starflow_analytics/build/pcap_flow_file_exporter \
+    -v -e ip -i /root/mnt/caida2015_02_dirA_10m.pcap -o /root/mnt/caida2015_02_dirA_10m.clfr
 ```
 
 Run an example application:
 
 ```bash
-    docker run -v /home/ubuntu:/root/mnt olivermichel/starflow_analytics \
-        /root/starflow_analytics/build/passthrough -b -i /root/mnt/caida2015_02_dirA_10m.clfr
+docker run -v /home/ubuntu:/root/mnt olivermichel/starflow_analytics \
+    /root/starflow_analytics/build/passthrough -b -i /root/mnt/caida2015_02_dirA_10m.clfr
 ```
 
 ## References

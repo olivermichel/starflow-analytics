@@ -20,6 +20,8 @@ include(cmake/dep/cxxopts.cmake)
 
 include_directories(ext/include)
 
+set(OUT_DIR ${CMAKE_CURRENT_LIST_DIR}/out)
+
 set(MODULES_DIR ${CMAKE_CURRENT_LIST_DIR}/src/modules)
 set(MODULES_SRC
         ${MODULES_DIR}/clfr_file_reader.h ${MODULES_DIR}/clfr_file_reader.cc
@@ -74,6 +76,7 @@ set(PROTO_SRC
         ${PROTO_DIR}/starflow.grpc.pb.h ${PROTO_DIR}/starflow.grpc.pb.cc)
 
 file(MAKE_DIRECTORY ${PROTO_DIR})
+file(MAKE_DIRECTORY ${OUT_DIR})
 
 add_custom_command(
         OUTPUT ${PROTO_SRC}
