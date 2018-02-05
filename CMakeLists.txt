@@ -62,6 +62,7 @@ set(KERNELS_SRC
         ${KERNELS_DIR}/pcap_file_reader.h ${KERNELS_DIR}/pcap_file_reader.cc
         ${KERNELS_DIR}/printer.h ${KERNELS_DIR}/printer.cc
         ${KERNELS_DIR}/raw_packet_parser.h ${KERNELS_DIR}/raw_packet_parser.cc
+        ${KERNELS_DIR}/replicator.h ${KENRELS_DIR}/replicator.cc
         ${KERNELS_DIR}/tzsp_receiver.h ${KERNELS_DIR}/tzsp_receiver.cc)
 
 set(ETC_DIR ${CMAKE_CURRENT_LIST_DIR}/src/etc)
