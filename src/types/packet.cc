@@ -74,6 +74,11 @@ bool starflow::types::Packet::operator!=(const Packet& other) const
 	return !operator==(other);
 }
 
+std::uint64_t starflow::types::Packet::id(const Key& key) const
+{
+	return key.ip_proto + key.ip_src + key.ip_dst + key.th_sport + key.th_dport + features.ip_id;
+}
+
 starflow::proto::packet starflow::types::Packet::to_proto() const
 {
 	starflow::proto::packet p;

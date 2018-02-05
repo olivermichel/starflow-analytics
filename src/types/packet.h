@@ -28,6 +28,8 @@ namespace starflow {
 			bool operator==(const Packet& other) const;
 			bool operator!=(const Packet& other) const;
 
+			std::uint64_t id(const Key& key) const;
+
 			std::uint64_t ts_in_us;
 			std::uint64_t ts_out_us;
 
