@@ -33,9 +33,10 @@ message tcp_flags {
 }
 
 message features {
-    uint32 tcp_seq      = 1;
-    uint32 tcp_pl_len   = 2;
-    tcp_flags tcp_flags = 3;
+    uint32 ip_id        = 1;
+    uint32 tcp_seq      = 2;
+    uint32 tcp_pl_len   = 3;
+    tcp_flags tcp_flags = 4;
 }
 
 message clfr {

@@ -30,13 +30,14 @@ bool starflow::types::Packet::parse(const unsigned char* buf, std::size_t len, K
 	ip = (struct ip*) (buf + pkt_offset);
 	pkt_offset += sizeof(struct ip);
 
+	pkt.features.ip_id = ntohs(ip->ip_id);
+
 	if (ip->ip_p == IPPROTO_TCP) {
 		tcp = (struct tcphdr*) (buf + pkt_offset);
 		key = {ip->ip_p, ip->ip_src, ip->ip_dst, ntohs(tcp->th_sport), ntohs(tcp->th_dport)};
 		pkt.features.tcp_flags  = starflow::types::Features::tcp_flags_t(tcp->th_flags);
 		pkt.features.tcp_seq    = ntohl(tcp->th_seq);
 		pkt.features.tcp_pl_len = ntohs(ip->ip_len) - sizeof(struct ip) - tcp->th_off * 4;
-
 	} else if (ip->ip_p == IPPROTO_UDP) {
 		udp = (struct udphdr*) (buf + pkt_offset);
 		key = {ip->ip_p, ip->ip_src, ip->ip_dst, ntohs(udp->uh_sport), ntohs(udp->uh_dport)};
