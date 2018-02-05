@@ -74,10 +74,8 @@ int main(int argc, char** argv)
 
 	m.exe();
 
-	if (config.benchmark) {
-		benchmark.done();
-		benchmark.print_results();
-	}
+	if (config.benchmark)
+		benchmark.done(), benchmark.print_results();
 
 	return 0;
 }
