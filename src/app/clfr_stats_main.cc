@@ -15,7 +15,7 @@ int main(int argc, char** argv)
 	}
 
 	try {
-		unsigned long clfr_count = 0;
+		unsigned long clfr_count = 0, packet_count = 0;
 		sf::types::CLFR  first{}, last{}, current{};
 
 		sf::modules::CLFRFileReader clfr_reader(argv[1]);
@@ -28,17 +28,21 @@ int main(int argc, char** argv)
 				first = current;
 
 			clfr_count++;
+			packet_count += current.n_packets();
 		}
 
 		last = current;
 		std::time_t first_evict_time = first.evict_ts_s();
 		std::time_t last_evict_time  = last.evict_ts_s();
 
-		std::cout << "File name:            " << argv[1] << std::endl;
-		std::cout << "Number of CLFRs:      " << clfr_count << std::endl;
-		std::cout << "First eviction:       "
+		std::cout << "File name:              " << argv[1] << std::endl;
+		std::cout << "Number of CLFRs:        " << clfr_count << std::endl;
+		std::cout << "Number of Packets:      " << packet_count << std::endl;
+		std::cout << "Avg. Packets per CLFR:  "
+				  << std::setprecision(5) << packet_count / (double) clfr_count << std::endl;
+		std::cout << "First eviction:         "
 				  << std::put_time(std::localtime(&first_evict_time), "%F %H:%M:%S%z") << std::endl;
-		std::cout << "Last eviction:        "
+		std::cout << "Last eviction:          "
 				  << std::put_time(std::localtime(&last_evict_time), "%F %H:%M:%S%z") << std::endl;
 
 	} catch (std::runtime_error& e) {
