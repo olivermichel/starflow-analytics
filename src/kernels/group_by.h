@@ -3,7 +3,6 @@
 #define STARFLOW_ANALYTICS_KERNELS_GROUP_BY_H
 
 #include <raft>
-#include "../types/clfr.h"
 
 namespace starflow {
 	namespace kernels {

@@ -63,7 +63,8 @@ set(KERNELS_SRC
         ${KERNELS_DIR}/printer.h ${KERNELS_DIR}/printer.cc
         ${KERNELS_DIR}/raw_packet_parser.h ${KERNELS_DIR}/raw_packet_parser.cc
         ${KERNELS_DIR}/replicator.h ${KENRELS_DIR}/replicator.cc
-        ${KERNELS_DIR}/tzsp_receiver.h ${KERNELS_DIR}/tzsp_receiver.cc)
+        ${KERNELS_DIR}/tzsp_receiver.h ${KERNELS_DIR}/tzsp_receiver.cc
+        ${KERNELS_DIR}/zip.h ${KERNELS_DIR}/zip.cc)
 
 set(ETC_DIR ${CMAKE_CURRENT_LIST_DIR}/src/etc)
 set(ETC_SRC
@@ -100,3 +101,4 @@ include(cmake/app/tcp_non_monotonic.cmake)
 include(cmake/app/tcp_out_of_sequence.cmake)
 include(cmake/app/test_runner.cmake)
 include(cmake/app/test_ui_client.cmake)
+include(cmake/app/zip_test.cmake)
