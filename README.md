@@ -14,7 +14,7 @@
 
 ## Build
 
-* requires cmake >= 3.5 and gcc >= 6
+* requires `cmake >= 3.5` and `gcc >= 6`
 
 ```bash
 mkdir build && cd build
@@ -36,15 +36,16 @@ make test
 |CLFRFileWriter      |CLFR                                  |*none*                                |
 |CLFRPrinter         |CLFR                                  |CLFR *or none*                        |
 |FlowTable           |Key, Packet                           |CLFR                                  |
-|GroupBy             |*T*                                   |*U*
+|GroupBy             |*T*                                   |*U*                                   |
 |LiveCapture         |*none*                                |RawPacket                             |
-|Map                 |*T*                                   |*U*                                 |
+|Map                 |*T*                                   |*U*                                   |
 |Filter              |*T*                                   |*T*                                   |
-|PacketPrinter       |Key, Packet                           |Key, Packet or none                 |
+|PacketPrinter       |Key, Packet                           |Key, Packet or none                   |
 |PCAPFileReader      |*none*                                |RawPacket                             |
-|Printer             |*T*                                   |*T* or none                         |
+|Printer             |*T*                                   |*T* or none                           |
 |RawPacketParser     |RawPacket                             |Key, Packet                           |
 |TZSPReceiver        |*none*                                |RawPacket                             |
+|Zip                 |I1, I2,                               |O = std::pair<I1,I2>                  |
 
 ## Run Docker Container
 
