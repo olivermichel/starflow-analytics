@@ -14,11 +14,15 @@ namespace starflow {
 		class CLFRFileReader : public raft::kernel
 		{
 		public:
-			explicit CLFRFileReader(const std::string& file_name);
+			using _out_t = types::CLFR;
+			using _batch_out_t = std::vector<types::CLFR>;
+
+			explicit CLFRFileReader(const std::string& file_name, unsigned batch_size = 0);
 			raft::kstatus run() override;
 			~CLFRFileReader() override;
 		private:
 			modules::CLFRFileReader _clfr_file_reader;
+			unsigned _batch_size;
 		};
 	}
 }
