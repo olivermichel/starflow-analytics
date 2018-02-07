@@ -3,6 +3,7 @@
 #define STARFLOW_ANALYTICS_MODULES_COUNTER_H
 
 #include <map>
+#include <vector>
 
 namespace starflow {
 	namespace modules {
@@ -22,6 +23,16 @@ namespace starflow {
 					return *i;
 				}
 			}
+
+			std::vector<std::pair<AggregationType, unsigned long long>>
+			operator+=(std::vector<std::pair<AggregationType, unsigned long long>> pair_vector)
+			{
+				std::vector<std::pair<AggregationType, unsigned long long>> v;
+				for (auto p : pair_vector)
+					v.push_back(operator+=(p));
+				return v;
+			};
+
 		private:
 			std::map<AggregationType, unsigned long long> _counts;
 		};
