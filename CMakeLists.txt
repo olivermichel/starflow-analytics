@@ -91,6 +91,7 @@ add_custom_command(
         WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
 
 include(cmake/app/active_connections.cmake)
+include(cmake/app/batch_test.cmake)
 include(cmake/app/clfr_stats.cmake)
 include(cmake/app/ewma_latencies.cmake)
 include(cmake/app/flowlet_size_histogram.cmake)
