@@ -31,7 +31,7 @@ raft::kstatus starflow::kernels::PCAPFileReader::run()
 			if (batch_counter <= _batch_size)
 				v.push_back(pair);
 			else
-				output["out"].push(v);`
+				output["out"].push(v);
 		} else {
 			output["out"].push(pair);
 		}
