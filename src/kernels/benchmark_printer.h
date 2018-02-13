@@ -15,9 +15,12 @@ namespace starflow {
 		class BenchmarkPrinter : public raft::kernel
 		{
 		public:
-			explicit BenchmarkPrinter(std::chrono::seconds interval = std::chrono::seconds(1),
-									  bool show_status = false, bool use_timer = false)
-				: _interval(interval),
+			explicit BenchmarkPrinter(std::string prefix = "",
+									  std::chrono::seconds interval = std::chrono::seconds(1),
+									  bool show_status = false,
+									  bool use_timer = false)
+				: _prefix(prefix),
+				  _interval(interval),
 				  _show_status(show_status),
 				  _use_timer(use_timer),
 				  _timer([this](unsigned long long i) { return _tick(); }, interval)
@@ -103,19 +106,28 @@ namespace starflow {
 				return total() / _counts.size();
 			}
 
-			void print_results(std::ostream& os = std::cout) const throw (std::logic_error)
+			void print_results(bool full = true, std::ostream& os = std::cout)
+				const throw (std::logic_error)
 			{
 				if (!_done)
 					throw std::logic_error("BenchmarkPrinter: collection not yet finalized");
 
-				os  << _counts.front() << " " << total() << " " << runtime_ms() << " "
-					<< mean_per_interval() << std::endl;
+				if (_prefix != "")
+					os << _prefix << " ";
 
-				for (unsigned i = 1; i < _counts.size(); i++)
-					os << _counts[i] << std::endl;
+				if (full)
+					os << _counts.front() << " ";
+
+				os  << total() << " " << runtime_ms() << " " << mean_per_interval() << std::endl;
+
+				if (full) {
+					for (unsigned i = 1; i < _counts.size(); i++)
+						os << _counts[i] << std::endl;
+				}
 			}
 
 		private:
+			std::string _prefix;
 			std::chrono::milliseconds _interval;
 			bool _show_status;
 			bool _done = false;
