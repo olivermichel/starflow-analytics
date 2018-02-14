@@ -1,7 +1,7 @@
 
 # *Flow Analytics 
 
-[![Build Status](https://travis-ci.com/olivermichel/starflow_analytics.svg?token=Kp1zsMqFYWDB9S3qhPXx&branch=master)](https://travis-ci.com/olivermichel/starflow_analytics)
+[![Build Status](https://travis-ci.org/olivermichel/starflow-analytics.svg?branch=master)](https://travis-ci.org/olivermichel/starflow-analytics)
 ### Dependencies
 
 * libraft [[1]](https://github.com/RaftLib/RaftLib)
