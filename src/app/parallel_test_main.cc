@@ -62,7 +62,7 @@ config _parse_config(cxxopts::Options opts, int argc, char** argv)
 
 	config.benchmark = (bool) parsed_opts.count("b");
 	config.verbose = (bool) parsed_opts.count("v");
-	config.batch_size = parsed_opts.count("a") ? parsed_opts["a"].as<unsigned>() : 0;
+	config.batch_size = parsed_opts.count("a") ? parsed_opts["a"].as<unsigned>() : 1;
 	config.parallelization_factor = parsed_opts.count("p") ? parsed_opts["p"].as<unsigned>() : 1;
 
 	return config;
@@ -70,9 +70,14 @@ config _parse_config(cxxopts::Options opts, int argc, char** argv)
 
 void _initialize_sources(const config& config, src_container_t& sources)
 {
-	for (unsigned i = 0; i < config.parallelization_factor; i ++)
-		sources.push_back(
-			std::make_unique<sf::kernels::CLFRFileReader>(config.input, config.batch_size));
+	for (unsigned i = 0; i < config.parallelization_factor; i ++) {
+		if (config.batch_size > 1)
+			sources.push_back(
+				std::make_unique<sf::kernels::CLFRFileReader>(config.input, config.batch_size));
+		else
+			sources.push_back(
+				std::make_unique<sf::kernels::CLFRFileReader>(config.input));
+	}
 }
 
 void _initialize_sinks(const config& config, snk_container_t& sinks)
